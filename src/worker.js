@@ -2,7 +2,7 @@ import { initializeParams } from './helpers/init';
 import { VLOverWSHandler } from './types/v';
 import { TROverWSHandler } from './types/t';
 import { fallback, serveIcon, renderError, renderSecrets, handlePanel, handleSubscriptions, handleLogin, handleError } from './helpers/helpers';
-import { logout } from './idetify/auth';
+import { logout } from './identify/auth';
 
 export default {
 	async fetch(request, env) {

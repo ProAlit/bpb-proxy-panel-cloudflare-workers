@@ -1,4 +1,4 @@
-import { Authenticate, generateJWTToken, resetPassword } from "../idetify/auth";
+import { Authenticate, generateJWTToken, resetPassword } from "../identify/auth";
 import { getClashNormalConfig, getClashWarpConfig } from "../clients/c";
 import { extractWireguardParams } from "../clients/helpers";
 import { getHiddifyWarpConfigs, getNormalConfigs } from "../clients/n";
