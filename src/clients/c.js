@@ -1,85 +1,85 @@
-import { getConfigAddresses, extractWireguardParams, generateRemark, randomUpperCase, getRandomPath, isIPv6, isIPv4, isDomain, getDomain } from './helpers';
-import { getDataset } from '../storage/handlers';
+import { xxgkz, moume, ugwvm, gsrxe, bbzbf, uxwpo, dcmlm, ifvza, msupl } from './helpers';
+import { nfmif } from '../storage/handlers';
 
-async function buildClashDNS(isChain, isWarp) {
+async function vzvnd(xpazn, oidgx) {
     const settings = globalThis.settings;
-    const finalLocalDNS = settings.localDNS === 'localhost' ? 'system' : `${settings.localDNS}#DIRECT`;
-    const isIPv6 = (settings.VLTRenableIPv6 && !isWarp) || (settings.warpEnableIPv6 && isWarp);
-    const dnsObject = {
+    const oejgb = settings.eyjft === 'localhost' ? 'system' : `${settings.eyjft}#DIRECT`;
+    const uxwpo = (settings.iuixd && !oidgx) || (settings.aczdc && oidgx);
+    const eoivz = {
         "enable": true,
         "listen": "0.0.0.0:1053",
-        "ipv6": isIPv6,
+        "ipv6": uxwpo,
         "respect-rules": true,
         "use-system-hosts": false,
-        "nameserver": [`${isWarp ? '1.1.1.1' : settings.remoteDNS}#Selector`],
-        "proxy-server-nameserver": [finalLocalDNS],
+        "nameserver": [`${oidgx ? '76.76.2.2' : settings.npihj}#Selector`],
+        "proxy-server-nameserver": [oejgb],
         "nameserver-policy": {
-            "raw.githubusercontent.com": finalLocalDNS,
-            "time.apple.com": finalLocalDNS
+            "raw.githubusercontent.com": oejgb,
+            "time.apple.com": oejgb
         }
     };
 
-    if (settings.dohHost.isDomain && !isWarp) {
-        const { ipv4, ipv6, host } = settings.dohHost;
-        dnsObject["hosts"] = {
-            [host]: settings.VLTRenableIPv6 ? [...ipv4, ...ipv6] : ipv4
+    if (settings.dqnol.ifvza && !oidgx) {
+        const { ipv4, ipv6, host } = settings.dqnol;
+        eoivz["hosts"] = {
+            [host]: settings.iuixd ? [...ipv4, ...ipv6] : ipv4
         }
     }
 
-    const dnsHost = getDomain(settings.antiSanctionDNS);
+    const dnsHost = msupl(settings.owphv);
     if (dnsHost.isHostDomain) {
-        dnsObject["nameserver-policy"][dnsHost.host] = finalLocalDNS;
+        eoivz["nameserver-policy"][dnsHost.host] = oejgb;
     }
 
-    if (isChain && !isWarp) {
-        const chainOutboundServer = settings.outProxyParams.server;
-        if (isDomain(chainOutboundServer)) {
-            dnsObject["nameserver-policy"][chainOutboundServer] = `${settings.remoteDNS}#proxy-1`;
+    if (xpazn && !oidgx) {
+        const zlutm = settings.outProxyParams.server;
+        if (ifvza(zlutm)) {
+            eoivz["nameserver-policy"][zlutm] = `${settings.npihj}#proxy-1`;
         }
     }
 
-    const routingRules = getRoutingRules();
+    const routingRules = ntlth();
 
-    settings.customBlockRules.filter(isDomain).forEach(domain => {
-        if (!dnsObject["hosts"]) dnsObject["hosts"] = {};
-        dnsObject["hosts"][`+.${domain}`] = "127.0.0.1";
+    settings.tamos.filter(ifvza).forEach(domain => {
+        if (!eoivz["hosts"]) eoivz["hosts"] = {};
+        eoivz["hosts"][`+.${domain}`] = "127.0.0.1";
     });
 
-    settings.customBypassRules.filter(isDomain).forEach(domain => {
-        dnsObject["nameserver-policy"][`+.${domain}`] = `${settings.localDNS}#DIRECT`;
+    settings.grnqd.filter(ifvza).forEach(domain => {
+        eoivz["nameserver-policy"][`+.${domain}`] = `${settings.eyjft}#DIRECT`;
     });
 
-    settings.customBypassSanctionRules.filter(isDomain).forEach(domain => {
-        dnsObject["nameserver-policy"][`+.${domain}`] = `${settings.antiSanctionDNS}#DIRECT`;
+    settings.flmxj.filter(ifvza).forEach(domain => {
+        eoivz["nameserver-policy"][`+.${domain}`] = `${settings.owphv}#DIRECT`;
     });
 
     routingRules
         .filter(({ rule, ruleProvider }) => rule && ruleProvider?.geosite)
         .forEach(({ type, dns, ruleProvider }) => {
             if (type === 'DIRECT') {
-                dnsObject["nameserver-policy"][`rule-set:${ruleProvider.geosite}`] = dns;
+                eoivz["nameserver-policy"][`rule-set:${ruleProvider.geosite}`] = dns;
             } else {
-                if (!dnsObject["hosts"]) dnsObject["hosts"] = {};
-                dnsObject["hosts"][`rule-set:${ruleProvider.geosite}`] = "127.0.0.1";
+                if (!eoivz["hosts"]) eoivz["hosts"] = {};
+                eoivz["hosts"][`rule-set:${ruleProvider.geosite}`] = "127.0.0.1";
             }
         });
 
-    const isFakeDNS = (settings.VLTRFakeDNS && !isWarp) || (settings.warpFakeDNS && isWarp);
-    if (isFakeDNS) Object.assign(dnsObject, {
+    const uzrpy = (settings.rmyls && !oidgx) || (settings.yygbp && oidgx);
+    if (uzrpy) Object.assign(eoivz, {
         "enhanced-mode": "fake-ip",
         "fake-ip-range": "198.18.0.1/16",
         "fake-ip-filter": ["*", "+.lan", "+.local"]
     });
 
-    return dnsObject;
+    return eoivz;
 }
 
-function buildClashRoutingRules(isWarp) {
+function nvves(oidgx) {
     const settings = globalThis.settings;
-    const routingRules = getRoutingRules();
+    const routingRules = ntlth();
 
-    settings.customBlockRules.forEach(value => {
-        const isDomainValue = isDomain(value);
+    settings.tamos.forEach(value => {
+        const isDomainValue = ifvza(value);
         routingRules.push({
             rule: true,
             type: 'REJECT',
@@ -88,13 +88,13 @@ function buildClashRoutingRules(isWarp) {
         });
     });
 
-    const bypassRules = [
-        ...settings.customBypassRules,
-        ...settings.customBypassSanctionRules
+    const fnoru = [
+        ...settings.grnqd,
+        ...settings.flmxj
     ];
 
-    bypassRules.forEach(value => {
-        const isDomainValue = isDomain(value);
+    fnoru.forEach(value => {
+        const isDomainValue = ifvza(value);
         routingRules.push({
             rule: true,
             type: 'DIRECT',
@@ -138,50 +138,50 @@ function buildClashRoutingRules(isWarp) {
 
     let rules = [];
 
-    if (settings.bypassLAN) rules.push(`GEOIP,lan,DIRECT,no-resolve`);
+    if (settings.hwinp) rules.push(`GEOIP,lan,DIRECT,no-resolve`);
 
-    function addRoutingRule(geosites, geoips, domains, ips, type) {
+    function eblyk(geosites, geoips, domains, ips, type) {
         if(domains) domains.forEach(domain => rules.push(`DOMAIN-SUFFIX,${domain},${type}`));
         if(geosites) geosites.forEach(geosite => rules.push(`RULE-SET,${geosite},${type}`));
         if (ips) ips.forEach(value => {
-            const ipType = isIPv4(value) ? 'IP-CIDR' : 'IP-CIDR6';
-            const ip = isIPv6(value) ? value.replace(/\[|\]/g, '') : value;
-            const cidr = value.includes('/') ? '' : isIPv4(value) ? '/32' : '/128';
+            const ipType = dcmlm(value) ? 'IP-CIDR' : 'IP-CIDR6';
+            const ip = uxwpo(value) ? value.replace(/\[|\]/g, '') : value;
+            const cidr = value.includes('/') ? '' : dcmlm(value) ? '/32' : '/128';
             rules.push(`${ipType},${ip}${cidr},${type},no-resolve`);
         });
 
         if (geoips) geoips.forEach(geoip => rules.push(`RULE-SET,${geoip},${type}`));
     }
 
-    if (isWarp && settings.blockUDP443) rules.push("AND,((NETWORK,udp),(DST-PORT,443)),REJECT");
-    if (!isWarp) rules.push("NETWORK,udp,REJECT");
+    if (oidgx && settings.vgcfx) rules.push("AND,((NETWORK,udp),(DST-PORT,443)),REJECT");
+    if (!oidgx) rules.push("NETWORK,udp,REJECT");
 
     for (const [type, rule] of groupedRules) {
         const { domain, ip, geosite, geoip } = rule;
 
-        if (domain.length) addRoutingRule(null, null, domain, null, type);
-        if (geosite.length) addRoutingRule(geosite, null, null, null, type);
-        if (ip.length) addRoutingRule(null, null, null, ip, type);
-        if (geoip.length) addRoutingRule(null, geoip, null, null, type);
+        if (domain.length) eblyk(null, null, domain, null, type);
+        if (geosite.length) eblyk(geosite, null, null, null, type);
+        if (ip.length) eblyk(null, null, null, ip, type);
+        if (geoip.length) eblyk(null, geoip, null, null, type);
     }
 
     rules.push("MATCH,Selector");
     return { rules, ruleProviders };
 }
 
-function buildClashVLOutbound(remark, address, port, host, sni, proxyIPs, allowInsecure) {
+function xrvws(remark, address, port, host, sni, xljwa, allowInsecure) {
     const settings = globalThis.settings;
-    const tls = globalThis.defaultHttpsPorts.includes(port) ? true : false;
-    const addr = isIPv6(address) ? address.replace(/\[|\]/g, '') : address;
-    const path = `/${getRandomPath(16)}${proxyIPs.length ? `/${btoa(proxyIPs.join(','))}` : ''}`;
-    const ipVersion = settings.VLTRenableIPv6 ? "dual" : "ipv4";
+    const tls = globalThis.dksvm.includes(port) ? true : false;
+    const addr = uxwpo(address) ? address.replace(/\[|\]/g, '') : address;
+    const path = `/${bbzbf(16)}${xljwa.length ? `/${btoa(xljwa.join(','))}` : ''}`;
+    const ipVersion = settings.iuixd ? "dual" : "ipv4";
 
     const outbound = {
         "name": remark,
         "type": atob('dmxlc3M='),
         "server": addr,
         "port": port,
-        "uuid": globalThis.userID,
+        "uuid": globalThis.hfruk,
         "packet-encoding": "packetaddr",
         "ip-version": ipVersion,
         "tls": tls,
@@ -191,7 +191,7 @@ function buildClashVLOutbound(remark, address, port, host, sni, proxyIPs, allowI
         "ws-opts": {
             "path": path,
             "headers": { "Host": host },
-            "max-early-data": 2560,
+            "max-early-data": 15360,
             "early-data-header-name": "Sec-WebSocket-Protocol"
         }
     };
@@ -199,7 +199,7 @@ function buildClashVLOutbound(remark, address, port, host, sni, proxyIPs, allowI
     if (tls) {
         Object.assign(outbound, {
             "servername": sni,
-            "alpn": ["http/1.1"],
+            "alpn": ["h3"],
             "client-fingerprint": "random",
             "skip-cert-verify": allowInsecure
         });
@@ -208,18 +208,18 @@ function buildClashVLOutbound(remark, address, port, host, sni, proxyIPs, allowI
     return outbound;
 }
 
-function buildClashTROutbound(remark, address, port, host, sni, proxyIPs, allowInsecure) {
+function lmnnl(remark, address, port, host, sni, xljwa, allowInsecure) {
     const settings = globalThis.settings;
-    const addr = isIPv6(address) ? address.replace(/\[|\]/g, '') : address;
-    const path = `/api${getRandomPath(16)}${proxyIPs.length ? `/${btoa(proxyIPs.join(','))}` : ''}`;
-    const ipVersion = settings.VLTRenableIPv6 ? "dual" : "ipv4";
+    const addr = uxwpo(address) ? address.replace(/\[|\]/g, '') : address;
+    const path = `/api${bbzbf(16)}${xljwa.length ? `/${btoa(xljwa.join(','))}` : ''}`;
+    const ipVersion = settings.iuixd ? "dual" : "ipv4";
 
     return {
         "name": remark,
         "type": atob('dHJvamFu'),
         "server": addr,
         "port": port,
-        "password": globalThis.TRPassword,
+        "password": globalThis.ffzll,
         "ip-version": ipVersion,
         "tls": true,
         "network": "ws",
@@ -228,41 +228,41 @@ function buildClashTROutbound(remark, address, port, host, sni, proxyIPs, allowI
         "ws-opts": {
             "path": path,
             "headers": { "Host": host },
-            "max-early-data": 2560,
+            "max-early-data": 15360,
             "early-data-header-name": "Sec-WebSocket-Protocol"
         },
         "sni": sni,
-        "alpn": ["http/1.1"],
+        "alpn": ["h3"],
         "client-fingerprint": "random",
         "skip-cert-verify": allowInsecure
     };
 }
 
-function buildClashWarpOutbound(warpConfigs, remark, endpoint, chain, isPro) {
+function tjxkc(ucdin, remark, sbvwg, chain, aojtx) {
     const settings = globalThis.settings;
-    const ipv6Regex = /\[(.*?)\]/;
-    const portRegex = /[^:]*$/;
-    const endpointServer = endpoint.includes('[') ? endpoint.match(ipv6Regex)[1] : endpoint.split(':')[0];
-    const endpointPort = endpoint.includes('[') ? +endpoint.match(portRegex)[0] : +endpoint.split(':')[1];
-    const ipVersion = settings.warpEnableIPv6 ? "dual" : "ipv4";
+    const gdsyo = /\[(.*?)\]/;
+    const dywnn = /[^:]*$/;
+    const aqzje = sbvwg.includes('[') ? sbvwg.match(gdsyo)[1] : sbvwg.split(':')[0];
+    const ixoks = sbvwg.includes('[') ? +sbvwg.match(dywnn)[0] : +sbvwg.split(':')[1];
+    const ipVersion = settings.aczdc ? "dual" : "ipv4";
 
     const {
-        warpIPv6,
+        anqse,
         reserved,
-        publicKey,
-        privateKey
-    } = extractWireguardParams(warpConfigs, chain);
+        bwgqa,
+        qhjno
+    } = moume(ucdin, chain);
 
     let outbound = {
         "name": remark,
         "type": "wireguard",
         "ip": "172.16.0.2/32",
-        "ipv6": warpIPv6,
+        "ipv6": anqse,
         "ip-version": ipVersion,
-        "private-key": privateKey,
-        "server": chain ? "162.159.192.1" : endpointServer,
-        "port": chain ? 2408 : endpointPort,
-        "public-key": publicKey,
+        "private-key": qhjno,
+        "server": chain ? "162.159.192.1" : aqzje,
+        "port": chain ? 2408 : ixoks,
+        "public-key": bwgqa,
         "allowed-ips": ["0.0.0.0/0", "::/0"],
         "reserved": reserved,
         "udp": true,
@@ -270,15 +270,15 @@ function buildClashWarpOutbound(warpConfigs, remark, endpoint, chain, isPro) {
     };
 
     if (chain) outbound["dialer-proxy"] = chain;
-    if (isPro) outbound["amnezia-wg-option"] = {
-        "jc": String(settings.amneziaNoiseCount),
-        "jmin": String(settings.amneziaNoiseSizeMin),
-        "jmax": String(settings.amneziaNoiseSizeMax)
+    if (aojtx) outbound["amn-wg-option"] = {
+        "jc": String(settings.muanl),
+        "jmin": String(settings.cubtg),
+        "jmax": String(settings.bbdwc)
     }
     return outbound;
 }
 
-function buildClashChainOutbound(chainProxyParams) {
+function uaxsa(chainProxyParams) {
     if (["socks", "http"].includes(chainProxyParams.protocol)) {
         const { protocol, server, port, user, pass } = chainProxyParams;
         const proxyType = protocol === 'socks' ? 'socks5' : protocol;
@@ -307,11 +307,11 @@ function buildClashChainOutbound(chainProxyParams) {
     };
 
     if (security === 'tls') {
-        const tlsAlpns = alpn ? alpn?.split(',') : [];
+        const tofdy = alpn ? alpn?.split(',') : [];
         Object.assign(chainOutbound, {
             "tls": true,
             "servername": sni,
-            "alpn": tlsAlpns,
+            "alpn": tofdy,
             "client-fingerprint": fp
         });
     }
@@ -339,14 +339,14 @@ function buildClashChainOutbound(chainProxyParams) {
     }
 
     if (type === 'ws') {
-        const wsPath = path?.split('?ed=')[0];
-        const earlyData = +path?.split('?ed=')[1];
+        const dgqev = path?.split('?ed=')[0];
+        const azync = +path?.split('?ed=')[1];
         chainOutbound["ws-opts"] = {
-            "path": wsPath,
+            "path": dgqev,
             "headers": {
                 "Host": host
             },
-            "max-early-data": earlyData,
+            "max-early-data": azync,
             "early-data-header-name": "Sec-WebSocket-Protocol"
         };
     }
@@ -358,35 +358,35 @@ function buildClashChainOutbound(chainProxyParams) {
     return chainOutbound;
 }
 
-async function buildClashConfig(selectorTags, urlTestTags, secondUrlTestTags, isChain, isWarp, isPro) {
+async function nchcc(gzgoc, urlTestTags, secondUrlTestTags, xpazn, oidgx, aojtx) {
     const settings = globalThis.settings;
-    const config = structuredClone(clashConfigTemp);
-    config['dns'] = await buildClashDNS(isChain, isWarp);
+    const config = structuredClone(ffdeh);
+    config['dns'] = await vzvnd(xpazn, oidgx);
 
-    const { rules, ruleProviders } = buildClashRoutingRules(isWarp);
+    const { rules, ruleProviders } = nvves(oidgx);
     config['rules'] = rules;
     config['rule-providers'] = ruleProviders;
 
     const selector = {
         "name": "Selector",
         "type": "select",
-        "proxies": selectorTags
+        "proxies": gzgoc
     };
 
     const urlTest = {
-        "name": isWarp ? `W ${isPro ? 'Pro ' : ''}- BP` : 'BP',
+        "name": oidgx ? `W ${aojtx ? 'Pro ' : ''}- BP` : 'BP',
         "type": "url-test",
         "url": "https://www.google.com/generate_204",
-        "interval": isWarp ? settings.bestWarpInterval : settings.bestVLTRInterval,
+        "interval": oidgx ? settings.nzqku : settings.qvwlq,
         "tolerance": 50,
         "proxies": urlTestTags
     };
 
     config['proxy-groups'].push(selector, urlTest);
 
-    if (isWarp) {
+    if (oidgx) {
         const secondUrlTest = structuredClone(urlTest);
-        secondUrlTest["name"] = `WoW ${isPro ? 'Pro ' : ''}- BP`;
+        secondUrlTest["name"] = `WoW ${aojtx ? 'Pro ' : ''}- BP`;
         secondUrlTest["proxies"] = secondUrlTestTags;
         config['proxy-groups'].push(secondUrlTest);
     }
@@ -394,38 +394,38 @@ async function buildClashConfig(selectorTags, urlTestTags, secondUrlTestTags, is
     return config;
 }
 
-export async function getClashWarpConfig(request, env, isPro) {
-    const { warpConfigs } = await getDataset(request, env);
+export async function yzldz(request, env, aojtx) {
+    const { ucdin } = await nfmif(request, env);
     const settings = globalThis.settings;
-    const warpTags = [], wowTags = [];
+    const yexar = [], vbyiis = [];
     const outbounds = {
         proxies: [],
         chains: []
     }
 
-    settings.warpEndpoints.forEach((endpoint, index) => {
-        const warpTag = `${index + 1} - W ${isPro ? 'Pro ' : ''}`;
-        warpTags.push(warpTag);
+    settings.nfbjf.forEach((sbvwg, index) => {
+        const fzjat = `${index + 1} - W ${aojtx ? 'Pro ' : ''}`;
+        yexar.push(fzjat);
 
-        const wowTag = `${index + 1} - WoW ${isPro ? 'Pro ' : ''}`;
-        wowTags.push(wowTag);
+        const vbyii = `${index + 1} - WoW ${aojtx ? 'Pro ' : ''}`;
+        vbyiis.push(vbyii);
 
-        const warpOutbound = buildClashWarpOutbound(warpConfigs, warpTag, endpoint, '', isPro);
-        outbounds.proxies.push(warpOutbound);
+        const ekbdx = tjxkc(ucdin, fzjat, sbvwg, '', aojtx);
+        outbounds.proxies.push(ekbdx);
 
-        const WoWOutbound = buildClashWarpOutbound(warpConfigs, wowTag, endpoint, warpTag);
-        outbounds.chains.push(WoWOutbound);
+        const yyfsr = tjxkc(ucdin, vbyii, sbvwg, fzjat);
+        outbounds.chains.push(yyfsr);
 
     });
 
-    const selectorTags = [
-        `W ${isPro ? 'Pro ' : ''}- BP`,
-        `WoW ${isPro ? 'Pro ' : ''}- BP`,
-        ...warpTags,
-        ...wowTags
+    const gzgoc = [
+        `W ${aojtx ? 'Pro ' : ''}- BP`,
+        `WoW ${aojtx ? 'Pro ' : ''}- BP`,
+        ...yexar,
+        ...vbyiis
     ];
 
-    const config = await buildClashConfig(selectorTags, warpTags, wowTags, true, true, isPro);
+    const config = await nchcc(gzgoc, yexar, vbyiis, true, true, aojtx);
     config['proxies'].push(...outbounds.proxies, ...outbounds.chains);
 
     return new Response(JSON.stringify(config, null, 4), {
@@ -438,19 +438,19 @@ export async function getClashWarpConfig(request, env, isPro) {
     });
 }
 
-export async function getClashNormalConfig(env) {
+export async function fqyts(env) {
     const { settings, hostName } = globalThis;
-    let chainProxy;
-    if (settings.outProxy) {
+    let ydqma;
+    if (settings.mwhpc) {
         try {
-            chainProxy = buildClashChainOutbound(settings.outProxyParams);
+            ydqma = uaxsa(settings.outProxyParams);
         } catch (error) {
             console.log('An error occured while parsing chain proxy: ', error);
-            chainProxy = undefined;
-            const proxySettings = await env.S.get("proxySettings", { type: 'json' });
-            await env.S.put("proxySettings", JSON.stringify({
-                ...proxySettings,
-                outProxy: '',
+            ydqma = undefined;
+            const fkvzd = await env.S.get("fkvzd", { type: 'json' });
+            await env.S.put("fkvzd", JSON.stringify({
+                ...fkvzd,
+                mwhpc: '',
                 outProxyParams: {}
             }));
         }
@@ -458,9 +458,9 @@ export async function getClashNormalConfig(env) {
 
     let proxyIndex = 1;
     const protocols = [];
-    if(settings.VLConfigs) protocols.push(atob('VkxFU1M='));
-    if(settings.TRConfigs) protocols.push(atob('VHJvamFu'));
-    const Addresses = await getConfigAddresses(false);
+    if(settings.plfzn) protocols.push(atob('VkxFU1M='));
+    if(settings.zgull) protocols.push(atob('VHJvamFu'));
+    const Addresses = await xxgkz(false);
     const tags = [];
     const outbounds = {
         proxies: [],
@@ -471,46 +471,46 @@ export async function getClashNormalConfig(env) {
         let protocolIndex = 1;
         settings.ports.forEach(port => {
             Addresses.forEach(addr => {
-                let VLOutbound, TROutbound;
-                const isCustomAddr = settings.customCdnAddrs.includes(addr);
-                const configType = isCustomAddr ? 'C' : '';
-                const sni = isCustomAddr ? settings.customCdnSni : randomUpperCase(hostName);
-                const host = isCustomAddr ? settings.customCdnHost : hostName;
-                const tag = generateRemark(protocolIndex, port, addr, settings.cleanIPs, protocol, configType).replace(' : ', ' - ');
+                let urzeh, xrsmo;
+                const hntcm = settings.ykbpc.includes(addr);
+                const dzivc = hntcm ? 'C' : '';
+                const sni = hntcm ? settings.tvtiu : gsrxe(hostName);
+                const host = hntcm ? settings.mplxc : hostName;
+                const tag = ugwvm(protocolIndex, port, addr, settings.urrak, protocol, dzivc).replace(' : ', ' - ');
 
                 if (protocol === atob('VkxFU1M=')) {
-                    VLOutbound = buildClashVLOutbound(
-                        chainProxy ? `proxy-${proxyIndex}` : tag,
+                    urzeh = xrvws(
+                        ydqma ? `proxy-${proxyIndex}` : tag,
                         addr,
                         port,
                         host,
                         sni,
-                        settings.proxyIPs,
-                        isCustomAddr
+                        settings.xljwa,
+                        hntcm
                     );
 
-                    outbounds.proxies.push(VLOutbound);
+                    outbounds.proxies.push(urzeh);
                     tags.push(tag);
                 }
 
-                if (protocol === atob('VHJvamFu') && globalThis.defaultHttpsPorts.includes(port)) {
-                    TROutbound = buildClashTROutbound(
-                        chainProxy ? `proxy-${proxyIndex}` : tag,
+                if (protocol === atob('VHJvamFu') && globalThis.dksvm.includes(port)) {
+                    xrsmo = lmnnl(
+                        ydqma ? `proxy-${proxyIndex}` : tag,
                         addr,
                         port,
                         host,
                         sni,
-                        settings.proxyIPs,
-                        isCustomAddr
+                        settings.xljwa,
+                        hntcm
                     );
 
-                    outbounds.proxies.push(TROutbound);
+                    outbounds.proxies.push(xrsmo);
                     tags.push(tag);
                 }
 
 
-                if (chainProxy) {
-                    let chain = structuredClone(chainProxy);
+                if (ydqma) {
+                    let chain = structuredClone(ydqma);
                     chain['name'] = tag;
                     chain['dialer-proxy'] = `proxy-${proxyIndex}`;
                     outbounds.chains.push(chain);
@@ -522,8 +522,8 @@ export async function getClashNormalConfig(env) {
         });
     });
 
-    const selectorTags = ['BP', ...tags];
-    const config = await buildClashConfig(selectorTags, tags, null, chainProxy, false, false);
+    const gzgoc = ['BP', ...tags];
+    const config = await nchcc(gzgoc, tags, null, ydqma, false, false);
     config['proxies'].push(...outbounds.chains, ...outbounds.proxies);
 
     return new Response(JSON.stringify(config, null, 4), {
@@ -536,7 +536,7 @@ export async function getClashNormalConfig(env) {
     });
 }
 
-const clashConfigTemp = {
+const ffdeh = {
     "mixed-port": 7890,
     "ipv6": true,
     "allow-lan": true,
@@ -598,9 +598,9 @@ const clashConfigTemp = {
     }
 };
 
-function getRoutingRules() {
+function ntlth() {
     const settings = globalThis.settings;
-    const finalLocalDNS = settings.localDNS === 'localhost' ? 'system' : `${settings.localDNS}#DIRECT`;
+    const oejgb = settings.eyjft === 'localhost' ? 'system' : `${settings.eyjft}#DIRECT`;
     return [
         {
             rule: true,
@@ -634,7 +634,7 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.blockAds,
+            rule: settings.mfios,
             type: 'REJECT',
             ruleProvider: {
                 format: "text",
@@ -643,7 +643,7 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.blockPorn,
+            rule: settings.sestc,
             type: 'REJECT',
             ruleProvider: {
                 format: "text",
@@ -652,7 +652,7 @@ function getRoutingRules() {
             }
         },
         // {
-        //     rule: bypassLAN,
+        //     rule: hwinp,
         //     type: 'DIRECT',
         //     noResolve: true,
         //     ruleProvider: {
@@ -664,9 +664,9 @@ function getRoutingRules() {
         //     }
         // },
         {
-            rule: settings.bypassIran,
+            rule: settings.czypj,
             type: 'DIRECT',
-            dns: finalLocalDNS,
+            dns: oejgb,
             ruleProvider: {
                 format: "text",
                 geosite: "ir",
@@ -676,9 +676,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassChina,
+            rule: settings.buvbb,
             type: 'DIRECT',
-            dns: finalLocalDNS,
+            dns: oejgb,
             ruleProvider: {
                 format: "yaml",
                 geosite: "cn",
@@ -688,9 +688,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassRussia,
+            rule: settings.dbaix,
             type: 'DIRECT',
-            dns: finalLocalDNS,
+            dns: oejgb,
             ruleProvider: {
                 format: "yaml",
                 geosite: "ru",
@@ -700,9 +700,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassOpenAi,
+            rule: settings.wusgu,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "openai",
@@ -710,9 +710,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassMicrosoft,
+            rule: settings.kybqw,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "microsoft",
@@ -720,9 +720,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassOracle,
+            rule: settings.kegcg,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "oracle",
@@ -730,9 +730,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassDocker,
+            rule: settings.gnmkl,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "docker",
@@ -740,9 +740,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassAdobe,
+            rule: settings.bpmhq,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "adobe",
@@ -750,9 +750,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassEpicGames,
+            rule: settings.lhykb,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "epicgames",
@@ -760,9 +760,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassIntel,
+            rule: settings.ibcgq,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "intel",
@@ -770,9 +770,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassAmd,
+            rule: settings.vgzkc,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "amd",
@@ -780,9 +780,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassNvidia,
+            rule: settings.diqol,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "nvidia",
@@ -790,9 +790,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassAsus,
+            rule: settings.fhjyg,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "asus",
@@ -800,9 +800,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassHp,
+            rule: settings.sjtat,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "hp",
@@ -810,9 +810,9 @@ function getRoutingRules() {
             }
         },
         {
-            rule: settings.bypassLenovo,
+            rule: settings.shrnl,
             type: 'DIRECT',
-            dns: `${settings.antiSanctionDNS}#DIRECT`,
+            dns: `${settings.owphv}#DIRECT`,
             ruleProvider: {
                 format: "yaml",
                 geosite: "lenovo",

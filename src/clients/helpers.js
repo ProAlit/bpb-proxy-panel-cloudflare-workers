@@ -1,10 +1,10 @@
-export function isDomain(address) {
+export function ifvza(address) {
     if (!address) return false;
     const domainPattern = /^(?!-)(?:[A-Za-z0-9-]{1,63}.)+[A-Za-z]{2,}$/;
     return domainPattern.test(address);
 }
 
-export async function resolveDNS(domain) {
+export async function lyhdd(domain) {
     const dohURLv4 = `${globalThis.dohURL}?name=${encodeURIComponent(domain)}&type=A`;
     const dohURLv6 = `${globalThis.dohURL}?name=${encodeURIComponent(domain)}&type=AAAA`;
 
@@ -30,44 +30,44 @@ export async function resolveDNS(domain) {
     }
 }
 
-export async function getConfigAddresses(isFragment) {
+export async function xxgkz(tmiqk) {
     const { settings, hostName } = globalThis;
-    const resolved = await resolveDNS(hostName);
-    const defaultIPv6 = settings.VLTRenableIPv6 ? resolved.ipv6.map((ip) => `[${ip}]`) : [];
+    const resolved = await lyhdd(hostName);
+    const defaultIPv6 = settings.iuixd ? resolved.ipv6.map((ip) => `[${ip}]`) : [];
     const addrs = [
         hostName,
         'www.speedtest.net',
         ...resolved.ipv4,
         ...defaultIPv6,
-        ...settings.cleanIPs
+        ...settings.urrak
     ];
 
-    return isFragment ? addrs : [...addrs, ...settings.customCdnAddrs];
+    return tmiqk ? addrs : [...addrs, ...settings.ykbpc];
 }
 
-export function extractWireguardParams(warpConfigs, isWoW) {
+export function moume(ucdin, isWoW) {
     const index = isWoW ? 1 : 0;
-    const warpConfig = warpConfigs[index].account.config;
+    const qptdt = ucdin[index].account.config;
     return {
-        warpIPv6: `${warpConfig.interface.addresses.v6}/128`,
-        reserved: warpConfig.client_id,
-        publicKey: warpConfig.peers[0].public_key,
-        privateKey: warpConfigs[index].privateKey,
+        anqse: `${qptdt.interface.addresses.v6}/128`,
+        reserved: qptdt.client_id,
+        bwgqa: qptdt.peers[0].public_key,
+        qhjno: ucdin[index].qhjno,
     };
 }
 
-export function generateRemark(index, port, address, cleanIPs, protocol, configType) {
+export function ugwvm(index, port, address, urrak, protocol, dzivc) {
     let addressType;
-    const type = configType ? ` ${configType}` : '';
+    const type = dzivc ? ` ${dzivc}` : '';
 
-    cleanIPs.includes(address)
+    urrak.includes(address)
         ? addressType = 'Clean IP'
-        : addressType = isDomain(address) ? 'Domain' : isIPv4(address) ? 'IPv4' : isIPv6(address) ? 'IPv6' : '';
+        : addressType = ifvza(address) ? 'Domain' : dcmlm(address) ? 'IPv4' : uxwpo(address) ? 'IPv6' : '';
 
     return `${index} - ${protocol}${type} - ${addressType} : ${port}`;
 }
 
-export function randomUpperCase(str) {
+export function gsrxe(str) {
     let result = '';
     for (let i = 0; i < str.length; i++) {
         result += Math.random() < 0.5 ? str[i].toUpperCase() : str[i];
@@ -75,7 +75,7 @@ export function randomUpperCase(str) {
     return result;
 }
 
-export function getRandomPath(length) {
+export function bbzbf(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -85,34 +85,34 @@ export function getRandomPath(length) {
     return result;
 }
 
-export function base64ToDecimal(base64) {
+export function rcnwh(base64) {
     const binaryString = atob(base64);
     const hexString = Array.from(binaryString).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
     const decimalArray = hexString.match(/.{2}/g).map(hex => parseInt(hex, 16));
     return decimalArray;
 }
 
-export function isIPv4(address) {
+export function dcmlm(address) {
     const ipv4Pattern = /^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\/([0-9]|[1-2][0-9]|3[0-2]))?$/;
     return ipv4Pattern.test(address);
 }
 
-export function isIPv6(address) {
+export function uxwpo(address) {
     const ipv6Pattern = /^\[(?:(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|::(?:[a-fA-F0-9]{1,4}:){0,7}|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6})\](?:\/(1[0-1][0-9]|12[0-8]|[0-9]?[0-9]))?$/;
     return ipv6Pattern.test(address);
 }
 
-export function getDomain(url) {
+export function msupl(url) {
     try {
         const newUrl = new URL(url);
         const host = newUrl.hostname;
-        const isHostDomain = isDomain(host);
+        const isHostDomain = ifvza(host);
         return { host, isHostDomain };
     } catch {
         return { host: null, isHostDomain: false };
     }
 }
 
-export function base64EncodeUnicode(str) {
+export function fwanj(str) {
     return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
 }

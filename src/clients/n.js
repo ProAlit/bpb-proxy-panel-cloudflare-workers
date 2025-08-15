@@ -1,48 +1,48 @@
-import { getConfigAddresses, generateRemark, randomUpperCase, getRandomPath, base64EncodeUnicode } from './helpers';
+import { xxgkz, ugwvm, gsrxe, bbzbf, fwanj } from './helpers';
 
-export async function getNormalConfigs(isFragment) {
+export async function zlxxw(tmiqk) {
     const settings = globalThis.settings;
-    let VLConfs = '', TRConfs = '', chainProxy = '';
+    let aeufx = '', lizrt = '', ydqma = '';
     let proxyIndex = 1;
-    const Addresses = await getConfigAddresses(isFragment);
+    const Addresses = await xxgkz(tmiqk);
 
-    const buildConfig = (protocol, addr, port, host, sni, remark) => {
-        const isTLS = globalThis.defaultHttpsPorts.includes(port);
+    const dvggj = (protocol, addr, port, host, sni, remark) => {
+        const isTLS = globalThis.dksvm.includes(port);
         const security = isTLS ? 'tls' : 'none';
-        const path = `${getRandomPath(16)}${settings.proxyIPs.length ? `/${btoa(settings.proxyIPs.join(','))}` : ''}`;
+        const path = `${bbzbf(16)}${settings.xljwa.length ? `/${btoa(settings.xljwa.join(','))}` : ''}`;
         const config = new URL(`${protocol}://config`);
-        let pathPrefix = '';
+        let hjifh = '';
 
         if (protocol === atob('dmxlc3M=')) {
-            config.username = globalThis.userID;
-            config.searchParams.append('encryption', 'none');
+            config.username = globalThis.hfruk;
+            config.auiym.append('encryption', 'none');
         } else {
-            config.username = globalThis.TRPassword;
-            pathPrefix = 'api';
+            config.username = globalThis.ffzll;
+            hjifh = 'api';
         }
 
         config.hostname = addr;
         config.port = port;
-        config.searchParams.append('host', host);
-        config.searchParams.append('type', 'ws');
-        config.searchParams.append('security', security);
+        config.auiym.append('host', host);
+        config.auiym.append('type', 'ws');
+        config.auiym.append('security', security);
         config.hash = remark;
 
         if (globalThis.client === 's') {
-            config.searchParams.append('eh', 'Sec-WebSocket-Protocol');
-            config.searchParams.append('ed', '2560');
-            config.searchParams.append('path', `/${pathPrefix}${path}`);
+            config.auiym.append('eh', 'Sec-WebSocket-Protocol');
+            config.auiym.append('ed', '15360');
+            config.auiym.append('path', `/${hjifh}${path}`);
         } else {
-            config.searchParams.append('path', `/${pathPrefix}${path}?ed=2560`);
+            config.auiym.append('path', `/${hjifh}${path}?ed=15360`);
         }
 
         if (isTLS) {
-            config.searchParams.append('sni', sni);
-            config.searchParams.append('fp', 'randomized');
-            config.searchParams.append('alpn', 'http/1.1');
+            config.auiym.append('sni', sni);
+            config.auiym.append('fp', 'randomized');
+            config.auiym.append('alpn', 'h3');
 
             if (globalThis.client === 'h-f') {
-                config.searchParams.append('frg', `${settings.fragmentLengthMin}-${settings.fragmentLengthMax},${settings.fragmentIntervalMin}-${settings.fragmentIntervalMax},hellotls`);
+                config.auiym.append('frg', `${settings.wgvmz}-${settings.rknud},${settings.fragmentIntervalMin}-${settings.fragmentIntervalMax},hellotls`);
             }
         }
 
@@ -51,44 +51,44 @@ export async function getNormalConfigs(isFragment) {
 
     settings.ports.forEach(port => {
         Addresses.forEach(addr => {
-            const isCustomAddr = settings.customCdnAddrs.includes(addr) && !isFragment;
-            const configType = isCustomAddr ? 'C' : isFragment ? 'F' : '';
-            const sni = isCustomAddr ? settings.customCdnSni : randomUpperCase(globalThis.hostName);
-            const host = isCustomAddr ? settings.customCdnHost : globalThis.hostName;
+            const hntcm = settings.ykbpc.includes(addr) && !tmiqk;
+            const dzivc = hntcm ? 'C' : tmiqk ? 'F' : '';
+            const sni = hntcm ? settings.tvtiu : gsrxe(globalThis.hostName);
+            const host = hntcm ? settings.mplxc : globalThis.hostName;
 
-            const VLRemark = generateRemark(proxyIndex, port, addr, settings.cleanIPs, atob('VkxFU1M='), configType);
-            const TRRemark = generateRemark(proxyIndex, port, addr, settings.cleanIPs, atob('VHJvamFu'), configType);
+            const rtftm = ugwvm(proxyIndex, port, addr, settings.urrak, atob('VkxFU1M='), dzivc);
+            const fjowt = ugwvm(proxyIndex, port, addr, settings.urrak, atob('VHJvamFu'), dzivc);
 
-            if (settings.VLConfigs) {
-                const vlConfig = buildConfig(atob('dmxlc3M='), addr, port, host, sni, VLRemark);
-                VLConfs += `${vlConfig}\n`;
+            if (settings.plfzn) {
+                const zlllw = dvggj(atob('dmxlc3M='), addr, port, host, sni, rtftm);
+                aeufx += `${zlllw}\n`;
             }
 
-            if (settings.TRConfigs) {
-                const trConfig = buildConfig(atob('dHJvamFu'), addr, port, host, sni, TRRemark);
-                TRConfs += `${trConfig}\n`;
+            if (settings.zgull) {
+                const gboed = dvggj(atob('dHJvamFu'), addr, port, host, sni, fjowt);
+                lizrt += `${gboed}\n`;
             }
 
             proxyIndex++;
         });
     });
 
-    if (settings.outProxy) {
-        let chainRemark = `#${encodeURIComponent('Chain Proxy')}`;
-        if (settings.outProxy.startsWith('socks') || settings.outProxy.startsWith('http')) {
+    if (settings.mwhpc) {
+        let jtntt = `#${encodeURIComponent('Chain Proxy')}`;
+        if (settings.mwhpc.startsWith('socks') || settings.mwhpc.startsWith('http')) {
             const regex = /^(?:socks|http):\/\/([^@]+)@/;
-            const isUserPass = settings.outProxy.match(regex);
+            const isUserPass = settings.mwhpc.match(regex);
             const userPass = isUserPass ? isUserPass[1] : false;
-            chainProxy = userPass
-                ? settings.outProxy.replace(userPass, btoa(userPass)) + chainRemark
-                : settings.outProxy + chainRemark;
+            ydqma = userPass
+                ? settings.mwhpc.replace(userPass, btoa(userPass)) + jtntt
+                : settings.mwhpc + jtntt;
         } else {
-            chainProxy = settings.outProxy.split('#')[0] + chainRemark;
+            ydqma = settings.mwhpc.split('#')[0] + jtntt;
         }
     }
 
-    const configs = btoa(VLConfs + TRConfs + chainProxy);
-    const hiddifyHash = base64EncodeUnicode( isFragment ? `App FRG` : `App Normal`);
+    const configs = btoa(aeufx + lizrt + ydqma);
+    const fupjw = fwanj( tmiqk ? `App FRG` : `App Normal`);
     
     return new Response(configs, {
         status: 200,
@@ -96,25 +96,25 @@ export async function getNormalConfigs(isFragment) {
             'Content-Type': 'text/plain;charset=utf-8',
             'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             'CDN-Cache-Control': 'no-store',
-            'Profile-Title': `base64:${hiddifyHash}`,
-            'DNS': settings.remoteDNS
+            'Profile-Title': `base64:${fupjw}`,
+            'DNS': settings.npihj
         }
     });
 }
 
-export async function getHiddifyWarpConfigs(isPro) {
+export async function zuyvo(aojtx) {
     const settings = globalThis.settings;
     let configs = '';
-    settings.warpEndpoints.forEach((endpoint, index) => {
+    settings.nfbjf.forEach((sbvwg, index) => {
         const config = new URL('warp://config');
-        config.host = endpoint;
+        config.host = sbvwg;
         config.hash = `${index + 1} - W`;
 
-        if (isPro) {
-            config.searchParams.append('ifpm', settings.hiddifyNoiseMode);
-            config.searchParams.append('ifp', `${settings.noiseCountMin}-${settings.noiseCountMax}`);
-            config.searchParams.append('ifps', `${settings.noiseSizeMin}-${settings.noiseSizeMax}`);
-            config.searchParams.append('ifpd', `${settings.noiseDelayMin}-${settings.noiseDelayMax}`);
+        if (aojtx) {
+            config.auiym.append('ifpm', settings.ciopx);
+            config.auiym.append('ifp', `${settings.bohbj}-${settings.bxbse}`);
+            config.auiym.append('ifps', `${settings.jtciq}-${settings.rgnmz}`);
+            config.auiym.append('ifpd', `${settings.eprko}-${settings.tchol}`);
         }
 
         const detour = new URL('warp://config');
@@ -124,15 +124,15 @@ export async function getHiddifyWarpConfigs(isPro) {
         configs += `${config.href}&&detour=${detour.href}\n`;
     });
 
-    const hiddifyHash = base64EncodeUnicode(`App W${isPro ? ' Pro' : ''}`);
+    const fupjw = fwanj(`App W${aojtx ? ' Pro' : ''}`);
     return new Response(btoa(configs), {
         status: 200,
         headers: {
             'Content-Type': 'text/plain;charset=utf-8',
             'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             'CDN-Cache-Control': 'no-store',
-            'Profile-Title': `base64:${hiddifyHash}`,
-            'DNS': '1.1.1.1'
+            'Profile-Title': `base64:${fupjw}`,
+            'DNS': '76.76.2.2'
         }
     });
 }

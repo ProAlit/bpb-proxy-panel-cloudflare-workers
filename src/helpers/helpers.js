@@ -1,14 +1,14 @@
-import { Authenticate, generateJWTToken, resetPassword } from "../identify/auth";
-import { getClashNormalConfig, getClashWarpConfig } from "../clients/c";
-import { extractWireguardParams } from "../clients/helpers";
-import { getHiddifyWarpConfigs, getNormalConfigs } from "../clients/n";
-import { getSingBoxCustomConfig, getSingBoxWarpConfig } from "../clients/s";
-import { getXrayCustomConfigs, getXrayWarpConfigs } from "../clients/x";
-import { getDataset, updateDataset } from "../storage/handlers";
+import { jekni, generateJWTToken, qwctb } from "../identify/auth";
+import { fqyts, yzldz } from "../clients/c";
+import { moume } from "../clients/helpers";
+import { zuyvo, zlxxw } from "../clients/n";
+import { fdybn, absit } from "../clients/s";
+import { htplv, casaf } from "../clients/x";
+import { nfmif, wmbcn } from "../storage/handlers";
 import JSZip from "jszip";
-import { fetchWarpConfigs } from "../types/w";
+import { dnupd } from "../types/w";
 
-export function isValidUUID(uuid) {
+export function gotnn(uuid) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
 }
@@ -17,132 +17,132 @@ export async function handlePanel(request, env) {
 
     switch (globalThis.pathName) {
         case '/app':
-            return await renderPanel(request, env);
+            return await aqrzz(request, env);
         case '/app/setup':
-            return await getSettings(request, env);
+            return await nwujt(request, env);
         case '/app/u-setup':
-            return await updateSettings(request, env);
+            return await kuwty(request, env);
         case '/app/r-setup':
-            return await resetSettings(request, env);
+            return await wiipf(request, env);
         case '/app/r-pwd':
-            return await resetPassword(request, env);
+            return await qwctb(request, env);
         case '/app/info':
-            return await getMyIP(request);
+            return await dbdgc(request);
         case '/app/u-w':
-            return await updateWarpConfigs(request, env);
+            return await pzfgb(request, env);
         case '/app/g-w':
-            return await getWarpConfigs(request, env);
+            return await aszrv(request, env);
         default:
-            return await fallback(request);
+            return await ydmzk(request);
     }
 }
 
 export async function handleError(error) {
     const message = encodeURIComponent(error.message);
-    return Response.redirect(`${globalThis.urlOrigin}/problem?message=${message}`, 302);
+    return Response.redirect(`${globalThis.lfzuq}/problem?message=${message}`, 302);
 }
 
 export async function handleLogin(request, env) {
-    if (globalThis.pathName === '/sign') return await renderLogin(request, env);
+    if (globalThis.pathName === '/sign') return await jvynn(request, env);
     if (globalThis.pathName === '/sign/authenticate') return await generateJWTToken(request, env);
-    return await fallback(request);
+    return await ydmzk(request);
 }
 
 export async function handleSubscriptions(request, env) {
-    const { proxySettings: settings } = await getDataset(request, env);
+    const { fkvzd: settings } = await nfmif(request, env);
     globalThis.settings = settings;
-    const { pathName, client, subPath } = globalThis;
+    const { pathName, client, kxtow } = globalThis;
 
     switch (decodeURIComponent(pathName)) {
-        case `/link/n/${subPath}`:
-            return await getNormalConfigs(false);
+        case `/link/n/${kxtow}`:
+            return await zlxxw(false);
 
-        case `/link/f-n/${subPath}`:
+        case `/link/f-n/${kxtow}`:
             switch (client) {
                 case 's':
-                    return await getSingBoxCustomConfig(env, false);
+                    return await fdybn(env, false);
                 case 'c':
-                    return await getClashNormalConfig(env);
+                    return await fqyts(env);
                 case 'x':
-                    return await getXrayCustomConfigs(env, false);
+                    return await htplv(env, false);
                 default:
                     break;
             }
 
-        case `/link/frg/${subPath}`:
+        case `/link/frg/${kxtow}`:
             switch (client) {
                 case 's':
-                    return await getSingBoxCustomConfig(env, true);
+                    return await fdybn(env, true);
                 case 'h-f':
-                    return await getNormalConfigs(true);
+                    return await zlxxw(true);
                 default:
-                    return await getXrayCustomConfigs(env, true);
+                    return await htplv(env, true);
             }
 
-        case `/link/w/${subPath}`:
+        case `/link/w/${kxtow}`:
             switch (client) {
                 case 'c':
-                    return await getClashWarpConfig(request, env, false);
+                    return await yzldz(request, env, false);
                 case 's':
-                    return await getSingBoxWarpConfig(request, env);
+                    return await absit(request, env);
                 case 'h':
-                    return await getHiddifyWarpConfigs(false);
+                    return await zuyvo(false);
                 case 'x':
-                    return await getXrayWarpConfigs(request, env, false);
+                    return await casaf(request, env, false);
                 default:
                     break;
             }
 
-        case `/link/w-pro/${subPath}`:
+        case `/link/w-pro/${kxtow}`:
             switch (client) {
                 case 'c-pro':
-                    return await getClashWarpConfig(request, env, true);
+                    return await yzldz(request, env, true);
                 case 'h-pro':
-                    return await getHiddifyWarpConfigs(true);
+                    return await zuyvo(true);
                 case 'x-k':
                 case 'x-pro':
-                    return await getXrayWarpConfigs(request, env, true);
+                    return await casaf(request, env, true);
                 default:
                     break;
             }
 
         default:
-            return await fallback(request);
+            return await ydmzk(request);
     }
 }
 
-async function updateSettings(request, env) {
+async function kuwty(request, env) {
     if (request.method === 'POST') {
-        const auth = await Authenticate(request, env);
+        const auth = await jekni(request, env);
         if (!auth) return await respond(false, 401, 'Unauthorized!');
-        const proxySettings = await updateDataset(request, env);
-        return await respond(true, 200, null, proxySettings);
+        const fkvzd = await wmbcn(request, env);
+        return await respond(true, 200, null, fkvzd);
     }
 
     return await respond(false, 405, 'Method not allowed.');
 }
 
-async function resetSettings(request, env) {
+async function wiipf(request, env) {
     if (request.method === 'POST') {
-        const auth = await Authenticate(request, env);
+        const auth = await jekni(request, env);
         if (!auth) return await respond(false, 401, 'Unauthorized!');
-        const proxySettings = await updateDataset(request, env);
-        return await respond(true, 200, null, proxySettings);
+        const fkvzd = await wmbcn(request, env);
+        return await respond(true, 200, null, fkvzd);
     }
 
     return await respond(false, 405, 'Method Not Allowed!');
 }
 
-async function getSettings(request, env) {
+async function nwujt(request, env) {
     try {
         const isPassSet = await env.S.get('pwd') ? true : false;
-        const auth = await Authenticate(request, env);
+        const auth = await jekni(request, env);
         if (!auth) return await respond(false, 401, 'Unauthorized!', { isPassSet });
-        const { proxySettings } = await getDataset(request, env);
+        const { fkvzd } = await nfmif(request, env);
         const settings = {
-            proxySettings,
+            fkvzd,
             isPassSet,
-            subPath: globalThis.subPath
+            kxtow: globalThis.kxtow
         };
 
         return await respond(true, 200, null, settings);
@@ -151,9 +151,9 @@ async function getSettings(request, env) {
     }
 }
 
-export async function fallback(request) {
+export async function ydmzk(request) {
     const url = new URL(request.url);
-    url.hostname = globalThis.fallbackDomain;
+    url.hostname = globalThis.fnrbq;
     url.protocol = 'https:';
     const newRequest = new Request(url.toString(), {
         method: request.method,
@@ -165,33 +165,33 @@ export async function fallback(request) {
     return await fetch(newRequest);
 }
 
-async function getMyIP(request) {
+async function dbdgc(request) {
     const ip = await request.text();
     try {
         const response = await fetch(`http://ip-api.com/json/${ip}?nocache=${Date.now()}`);
-        const geoLocation = await response.json();
-        return await respond(true, 200, null, geoLocation);
+        const pejyn = await response.json();
+        return await respond(true, 200, null, pejyn);
     } catch (error) {
         console.error('Error fetching IP address:', error);
         return await respond(false, 500, `Error fetching IP address: ${error}`)
     }
 }
 
-async function getWarpConfigs(request, env) {
-    const isPro = globalThis.client === 'amnezia';
-    const auth = await Authenticate(request, env);
+async function aszrv(request, env) {
+    const aojtx = globalThis.client === 'amn';
+    const auth = await jekni(request, env);
     if (!auth) return new Response('Unauthorized!', { status: 401 });
-    const { warpConfigs, proxySettings } = await getDataset(request, env);
-    const warpConfig = extractWireguardParams(warpConfigs, false);
-    const { warpIPv6, publicKey, privateKey } = warpConfig;
-    const { warpEndpoints, amneziaNoiseCount, amneziaNoiseSizeMin, amneziaNoiseSizeMax } = proxySettings;
+    const { ucdin, fkvzd } = await nfmif(request, env);
+    const qptdt = moume(ucdin, false);
+    const { anqse, bwgqa, qhjno } = qptdt;
+    const { nfbjf, muanl, cubtg, bbdwc } = fkvzd;
     const zip = new JSZip();
     const trimLines = (string) => string.split("\n").map(line => line.trim()).join("\n");
-    const amneziaNoise = isPro
+    const roctv = aojtx
         ?
-        `Jc = ${amneziaNoiseCount}
-        Jmin = ${amneziaNoiseSizeMin}
-        Jmax = ${amneziaNoiseSizeMax}
+        `Jc = ${muanl}
+        Jmin = ${cubtg}
+        Jmax = ${bbdwc}
         S1 = 0
         S2 = 0
         H1 = 0
@@ -201,28 +201,28 @@ async function getWarpConfigs(request, env) {
         : '';
 
     try {
-        warpEndpoints.forEach((endpoint, index) => {
+        nfbjf.forEach((sbvwg, index) => {
             zip.file(`${atob('QlBC')}-W-${index + 1}.conf`, trimLines(
                 `[Interface]
-                PrivateKey = ${privateKey}
-                Address = 172.16.0.2/32, ${warpIPv6}
-                DNS = 1.1.1.1, 1.0.0.1
+                PrivateKey = ${qhjno}
+                Address = 172.16.0.2/32, ${anqse}
+                DNS = 76.76.2.2, 76.76.10.2
                 MTU = 1280
-                ${amneziaNoise}
+                ${roctv}
                 [Peer]
-                PublicKey = ${publicKey}
+                PublicKey = ${bwgqa}
                 AllowedIPs = 0.0.0.0/0, ::/0
-                Endpoint = ${endpoint}
+                Endpoint = ${sbvwg}
                 PersistentKeepalive = 25`
             ));
         });
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        const arrayBuffer = await zipBlob.arrayBuffer();
+        const rwoov = await zip.generateAsync({ type: "blob" });
+        const arrayBuffer = await rwoov.arrayBuffer();
         return new Response(arrayBuffer, {
             headers: {
                 "Content-Type": "application/zip",
-                "Content-Disposition": `attachment; filename="${atob('QlBC')}-W-${isPro ? "Pro-" : ""}configs.zip"`,
+                "Content-Disposition": `attachment; filename="${atob('QlBC')}-W-${aojtx ? "Pro-" : ""}configs.zip"`,
             },
         });
     } catch (error) {
@@ -230,9 +230,9 @@ async function getWarpConfigs(request, env) {
     }
 }
 
-export async function serveIcon() {
-    const faviconBase64 = __ICON__;
-    return new Response(Uint8Array.from(atob(faviconBase64), c => c.charCodeAt(0)), {
+export async function bkcez() {
+    const kmtmg = __ICON__;
+    return new Response(Uint8Array.from(atob(kmtmg), c => c.charCodeAt(0)), {
         headers: {
             'Content-Type': 'image/x-icon',
             'Cache-Control': 'public, max-age=86400',
@@ -240,41 +240,41 @@ export async function serveIcon() {
     });
 }
 
-async function renderPanel(request, env) {
+async function aqrzz(request, env) {
     const pwd = await env.S.get('pwd');
     if (pwd) {
-        const auth = await Authenticate(request, env);
-        if (!auth) return Response.redirect(`${globalThis.urlOrigin}/sign`, 302);
+        const auth = await jekni(request, env);
+        if (!auth) return Response.redirect(`${globalThis.lfzuq}/sign`, 302);
     }
 
-    const encodedHtml = __PANEL_HTML_CONTENT__;
+    const encodedHtml = __AHC__;
     const html = new TextDecoder('utf-8').decode(Uint8Array.from(atob(encodedHtml), c => c.charCodeAt(0)));
     return new Response(html, {
         headers: { 'Content-Type': 'text/html' }
     });
 }
 
-async function renderLogin(request, env) {
-    const auth = await Authenticate(request, env);
-    if (auth) return Response.redirect(`${urlOrigin}/app`, 302);
+async function jvynn(request, env) {
+    const auth = await jekni(request, env);
+    if (auth) return Response.redirect(`${lfzuq}/app`, 302);
 
-    const encodedHtml = __LOGIN_HTML_CONTENT__;
+    const encodedHtml = __LHC__;
     const html = new TextDecoder('utf-8').decode(Uint8Array.from(atob(encodedHtml), c => c.charCodeAt(0)));
     return new Response(html, {
         headers: { 'Content-Type': 'text/html' }
     });
 }
 
-export async function renderSecrets() {
-    const encodedHtml = __SECRETS_HTML_CONTENT__;
+export async function slymt() {
+    const encodedHtml = __EHC__;
     const html = new TextDecoder('utf-8').decode(Uint8Array.from(atob(encodedHtml), c => c.charCodeAt(0)));
     return new Response(html, {
         headers: { 'Content-Type': 'text/html' },
     });
 }
 
-export async function renderError() {
-    const encodedHtml = __ERROR_HTML_CONTENT__;
+export async function mfdkx() {
+    const encodedHtml = __PHC__;
     const html = new TextDecoder('utf-8').decode(Uint8Array.from(atob(encodedHtml), c => c.charCodeAt(0)));
     return new Response(html, {
         status: 200,
@@ -282,12 +282,12 @@ export async function renderError() {
     });
 }
 
-async function updateWarpConfigs(request, env) {
+async function pzfgb(request, env) {
     if (request.method === 'POST') {
-        const auth = await Authenticate(request, env);
+        const auth = await jekni(request, env);
         if (!auth) return await respond(false, 401, 'Unauthorized.');
         try {
-            await fetchWarpConfigs(env);
+            await dnupd(env);
             return await respond(true, 200, 'W Updated!');
         } catch (error) {
             console.log(error);

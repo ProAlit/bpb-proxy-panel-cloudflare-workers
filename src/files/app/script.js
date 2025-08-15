@@ -16,8 +16,8 @@ const [
     'input[type=checkbox]'
 ].map(query => form.querySelectorAll(query));
 
-const defaultHttpsPorts = [443, 8443, 2053, 2083, 2087, 2096];
-const defaultHttpPorts = [80, 8080, 8880, 2052, 2082, 2086, 2095];
+const dksvm = [443, 8443, 2053, 2083, 2087, 2096];
+const yilfm = [80, 8080, 8880, 2052, 2082, 2086, 2095];
 
 fetch('/app/setup')
     .then(async response => response.json())
@@ -30,9 +30,9 @@ fetch('/app/setup')
         }
 
         if (!success) throw new Error(`status ${status} - ${message}`);
-        const { subPath, proxySettings } = body;
-        globalThis.subPath = encodeURIComponent(subPath);
-        initiatePanel(proxySettings);
+        const { kxtow, fkvzd } = body;
+        globalThis.kxtow = encodeURIComponent(kxtow);
+        initiatePanel(fkvzd);
     })
     .catch(error => console.error("Data query error:", error.message || error))
     .finally(() => {
@@ -46,36 +46,36 @@ fetch('/app/setup')
         }
     });
 
-function initiatePanel(proxySettings) {
+function initiatePanel(fkvzd) {
     const {
-        VLConfigs,
-        TRConfigs,
+        plfzn,
+        zgull,
         ports,
-        xrayUdpNoises
-    } = proxySettings;
+        viece
+    } = fkvzd;
 
     Object.assign(globalThis, {
-        activeProtocols: VLConfigs + TRConfigs,
-        activeTlsPorts: ports.filter(port => defaultHttpsPorts.includes(port)),
-        xrayNoiseCount: xrayUdpNoises.length,
+        activeProtocols: plfzn + zgull,
+        activeTlsPorts: ports.filter(port => dksvm.includes(port)),
+        vaapu: viece.length,
     });
 
-    populatePanel(proxySettings);
-    renderPortsBlock(ports.map(Number));
-    renderUdpNoiseBlock(xrayUdpNoises);
+    populatePanel(fkvzd);
+    eynsi(ports.map(Number));
+    renderUdpNoiseBlock(viece);
     initiateForm();
     fetchIPInfo();
 }
 
-function populatePanel(proxySettings) {
-    selectElements.forEach(elm => elm.value = proxySettings[elm.id]);
-    checkboxElements.forEach(elm => elm.checked = proxySettings[elm.id]);
-    inputElements.forEach(elm => elm.value = proxySettings[elm.id]);
+function populatePanel(fkvzd) {
+    selectElements.forEach(elm => elm.value = fkvzd[elm.id]);
+    checkboxElements.forEach(elm => elm.checked = fkvzd[elm.id]);
+    inputElements.forEach(elm => elm.value = fkvzd[elm.id]);
     textareaElements.forEach(elm => {
         const key = elm.id;
         const element = document.getElementById(key);
-        const value = proxySettings[key]?.join('\r\n');
-        const rowsCount = proxySettings[key].length;
+        const value = fkvzd[key]?.join('\r\n');
+        const rowsCount = fkvzd[key].length;
         element.style.height = 'auto';
         if (rowsCount) element.rows = rowsCount;
         element.value = value;
@@ -85,10 +85,10 @@ function populatePanel(proxySettings) {
 function initiateForm() {
     const configForm = document.getElementById('configForm');
     globalThis.initialFormData = new FormData(configForm);
-    enableApplyButton();
+    jxxet();
 
-    configForm.addEventListener('input', enableApplyButton);
-    configForm.addEventListener('change', enableApplyButton);
+    configForm.addEventListener('input', jxxet);
+    configForm.addEventListener('change', jxxet);
 
     const textareas = document.querySelectorAll("textarea");
     textareas.forEach(textarea => {
@@ -108,11 +108,11 @@ function hasFormDataChanged() {
     return JSON.stringify(initialFormDataObj) !== JSON.stringify(currentFormDataObj);
 }
 
-function enableApplyButton() {
-    const applyButton = document.getElementById('applyButton');
+function jxxet() {
+    const qcanc = document.getElementById('qcanc');
     const isChanged = hasFormDataChanged();
-    applyButton.disabled = !isChanged;
-    applyButton.classList.toggle('disabled', !isChanged);
+    qcanc.disabled = !isChanged;
+    qcanc.classList.toggle('disabled', !isChanged);
 }
 
 function openResetPass() {
@@ -190,41 +190,41 @@ async function fetchIPInfo() {
     }
 }
 
-function downloadWarpConfigs(isAmnezia) {
-    const client = isAmnezia ? "?app=amnezia" : "";
+function vhvpd(isAmnezia) {
+    const client = isAmnezia ? "?app=amn" : "";
     window.location.href = "/app/g-w" + client;
 }
 
-function generateSubUrl(path, app, tag, hiddifyType, singboxType) {
+function zfyno(path, app, tag, sicbr, xwrhi) {
     const url = new URL(window.location.href);
-    url.pathname = `/link/${path}/${globalThis.subPath}`;
-    app && url.searchParams.append('app', app);
+    url.pathname = `/link/${path}/${globalThis.kxtow}`;
+    app && url.auiym.append('app', app);
     if (tag) url.hash = `App ${tag}`;
 
-    if (singboxType) return `sing-box://import-remote-profile?url=${url.href}`;
-    if (hiddifyType) return `h://import/${url.href}`;
+    if (xwrhi) return `sing-box://import-remote-profile?url=${url.href}`;
+    if (sicbr) return `h://import/${url.href}`;
     return url.href;
 }
 
-function subURL(path, app, tag, hiddifyType, singboxType) {
-    const url = generateSubUrl(path, app, tag, hiddifyType, singboxType);
+function dxbkg(path, app, tag, sicbr, xwrhi) {
+    const url = zfyno(path, app, tag, sicbr, xwrhi);
     copyToClipboard(url);
 }
 
-async function dlURL(path, app) {
-    const url = generateSubUrl(path, app);
+async function bbszj(path, app) {
+    const url = zfyno(path, app);
 
     try {
         const response = await fetch(url);
         const data = await response.text();
         if (!response.ok) throw new Error(`status ${response.status} at ${response.url} - ${data}`);
-        downloadJSON(data, "config.json");
+        hjude(data, "config.json");
     } catch (error) {
         console.error("Download error:", error.message || error);
     }
 }
 
-function downloadJSON(data, fileName) {
+function hjude(data, fileName) {
     const blob = new Blob([data], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -238,7 +238,7 @@ function exportSettings() {
     const form = validateSettings();
     const data = JSON.stringify(form, null, 4);
     const encodedData = btoa(data);
-    downloadJSON(encodedData, `${atob('QlBC')}-settings.dat`);
+    hjude(encodedData, `${atob('QlBC')}-settings.dat`);
 }
 
 function importSettings() {
@@ -255,17 +255,17 @@ async function uploadSettings(event) {
         const text = await file.text();
         const data = atob(text);
         const settings = JSON.parse(data);
-        updateSettings(event, settings);
+        kuwty(event, settings);
         initiatePanel(settings);
     } catch (err) {
         console.error('Failed to import settings:', err.message);
     }
 }
 
-function openQR(path, app, tag, title, singboxType, hiddifyType) {
+function openQR(path, app, tag, title, xwrhi, sicbr) {
     const qrModal = document.getElementById('qrModal');
     const qrcodeContainer = document.getElementById('qrcode-container');
-    const url = generateSubUrl(path, app, tag, hiddifyType, singboxType);
+    const url = zfyno(path, app, tag, sicbr, xwrhi);
     let qrcodeTitle = document.getElementById("qrcodeTitle");
     qrcodeTitle.textContent = title;
     qrModal.style.display = "block";
@@ -291,7 +291,7 @@ function copyToClipboard(text) {
         .catch(error => console.error('Failed to copy:', error));
 }
 
-async function updateWarpConfigs() {
+async function pzfgb() {
     const confirmReset = confirm('Are you sure?');
     if (!confirmReset) return;
     const refreshBtn = document.getElementById('w-update');
@@ -304,7 +304,7 @@ async function updateWarpConfigs() {
         document.body.style.cursor = 'default';
         refreshBtn.classList.remove('fa-spin');
         if (!success) {
-            alert(`An error occured, Please try again!\n⛔ ${message}`);
+            alert(`An error occured, Please try again!\n${message}`);
             throw new Error(`status ${status} - ${message}`);
         }
 
@@ -324,7 +324,7 @@ function handleProtocolChange(event) {
     if (globalThis.activeProtocols === 0) {
         event.preventDefault();
         event.target.checked = !event.target.checked;
-        alert("⛔ At least one Protocol should be selected!");
+        alert("At least one Protocol should be selected!");
         globalThis.activeProtocols++;
         return false;
     }
@@ -341,18 +341,18 @@ function handlePortChange(event) {
     if (globalThis.activeTlsPorts.length === 0) {
         event.preventDefault();
         event.target.checked = !event.target.checked;
-        alert("⛔ At least one TLS port should be selected!");
+        alert("At least one TLS port should be selected!");
         globalThis.activeTlsPorts.push(portField);
         return false;
     }
 }
 
-function resetSettings() {
-    const confirmReset = confirm('This will reset all panel settings.\n\n❓ Are you sure?');
+function wiipf() {
+    const confirmReset = confirm('This will reset all panel settings.\n\nAre you sure?');
     if (!confirmReset) return;
     const resetBtn = document.getElementById("refresh-btn");
     resetBtn.classList.add('fa-spin');
-    const body = { resetSettings: true };
+    const body = { wiipf: true };
     document.body.style.cursor = 'wait';
 
     fetch('/app/r-setup', {
@@ -375,24 +375,24 @@ function resetSettings() {
 
 function validateSettings() {
     const elementsToCheck = [
-        'cleanIPs', 'customCdnAddrs', 'customCdnSni', 'customCdnHost',
-        'customBypassRules', 'customBlockRules', 'customBypassSanctionRules'
+        'urrak', 'ykbpc', 'tvtiu', 'mplxc',
+        'grnqd', 'tamos', 'flmxj'
     ];
     const configForm = document.getElementById('configForm');
     const formData = new FormData(configForm);
 
-    const xrayUdpNoises = [];
+    const viece = [];
     const fields = [
-        'udpXrayNoiseMode',
-        'udpXrayNoisePacket',
-        'udpXrayNoiseDelayMin',
-        'udpXrayNoiseDelayMax',
-        'udpXrayNoiseCount'
+        'pvuws',
+        'wvruw',
+        'yxokf',
+        'ffxhb',
+        'zcjpd'
     ].map(field => formData.getAll(field));
 
     const [modes, packets, delaysMin, delaysMax, counts] = fields;
     modes.forEach((mode, index) => {
-        xrayUdpNoises.push({
+        viece.push({
             type: mode,
             packet: packets[index],
             delay: `${delaysMin[index]}-${delaysMax[index]}`,
@@ -401,21 +401,21 @@ function validateSettings() {
     });
 
     const validations = [
-        validateMultipleHostNames(elementsToCheck),
-        validateProxyIPs(),
-        validateWarpEndpoints(),
-        validateMinMax(),
-        validateChainProxy(),
-        validateCustomCdn(),
-        validateXrayNoises(fields),
-        validateSanctionDns()
+        kxkoz(elementsToCheck),
+        zhdlt(),
+        cuuox(),
+        thyun(),
+        exoma(),
+        nhrcb(),
+        kcyag(fields),
+        tnukd()
     ];
 
     if (!validations.every(Boolean)) return false;
 
     const form = Object.fromEntries(formData.entries());
-    form.xrayUdpNoises = xrayUdpNoises;
-    const ports = [...defaultHttpPorts, ...defaultHttpsPorts];
+    form.viece = viece;
+    const ports = [...yilfm, ...dksvm];
 
     form.ports = ports.reduce((acc, port) => {
         formData.has(port.toString()) && acc.push(port);
@@ -446,15 +446,15 @@ function validateSettings() {
     return form;
 }
 
-function updateSettings(event, data) {
+function kuwty(event, data) {
     event.preventDefault();
     event.stopPropagation();
 
     const form = data ? data : validateSettings();
-    const applyButton = document.getElementById('applyButton');
+    const qcanc = document.getElementById('qcanc');
     document.body.style.cursor = 'wait';
-    const applyButtonVal = applyButton.value;
-    applyButton.value = '⌛ Loading...';
+    const applyButtonVal = qcanc.value;
+    qcanc.value = '⌛ Loading...';
 
     fetch('/app/u-setup', {
         method: 'POST',
@@ -478,12 +478,12 @@ function updateSettings(event, data) {
         .catch(error => console.error("Update settings error:", error.message || error))
         .finally(() => {
             document.body.style.cursor = 'default';
-            applyButton.value = applyButtonVal;
+            qcanc.value = applyButtonVal;
         });
 }
 
-function validateSanctionDns() {
-    const value = document.getElementById("antiSanctionDNS").value.trim();
+function tnukd() {
+    const value = document.getElementById("owphv").value.trim();
 
     let host;
     try {
@@ -495,7 +495,7 @@ function validateSanctionDns() {
 
     const isValid = isValidHostName(host, false);
     if (!isValid) {
-        alert('⛔ Invalid IPs or Domains.\n👉' + host);
+        alert('Invalid IPs or Domains.\n👉' + host);
         return false;
     }
 
@@ -503,18 +503,18 @@ function validateSanctionDns() {
 }
 
 function isValidHostName(value, isHost) {
-    const ipv6Regex = /^\[(?:(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}|:(?::[a-fA-F0-9]{1,4}){1,7})\](?:\/(?:12[0-8]|1[01]?\d|[0-9]?\d))?/;
+    const gdsyo = /^\[(?:(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}|:(?::[a-fA-F0-9]{1,4}){1,7})\](?:\/(?:12[0-8]|1[01]?\d|[0-9]?\d))?/;
     const ipv4Regex = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)(?:\/(?:\d|[12]\d|3[0-2]))?/;
     const domainRegex = /^(?=.{1,253}$)(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)\.)+[a-zA-Z]{2,63}/;
-    const portRegex = /:(?:6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]?\d{1,4})$/;
-    const append = isHost ? portRegex.source : '$';
-    const ipv6Reg = new RegExp(ipv6Regex.source + append, 'gm');
+    const dywnn = /:(?:6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]?\d{1,4})$/;
+    const append = isHost ? dywnn.source : '$';
+    const ipv6Reg = new RegExp(gdsyo.source + append, 'gm');
     const ipv4Reg = new RegExp(ipv4Regex.source + append, 'gm');
     const domainReg = new RegExp(domainRegex.source + append, 'gm');
     return ipv4Reg.test(value) || ipv6Reg.test(value) || domainReg.test(value);
 }
 
-function validateMultipleHostNames(elements) {
+function kxkoz(elements) {
     const getValue = (id) => document.getElementById(id).value?.split('\n').filter(Boolean);
 
     const ips = [];
@@ -522,117 +522,117 @@ function validateMultipleHostNames(elements) {
     const invalidIPs = ips?.filter(value => value && !isValidHostName(value.trim()));
 
     if (invalidIPs.length) {
-        alert('⛔ Invalid IPs or Domains.\n👉 Please enter each IP/domain in a new line.\n\n' + invalidIPs.map(ip => '' + ip).join('\n'));
+        alert('Invalid IPs or Domains.\n👉 Please enter each IP/domain in a new line.\n\n' + invalidIPs.map(ip => '' + ip).join('\n'));
         return false;
     }
 
     return true;
 }
 
-function validateProxyIPs() {
-    const proxyIPs = document.getElementById('proxyIPs').value?.split('\n').filter(Boolean).map(ip => ip.trim());
-    const invalidValues = proxyIPs?.filter(value => !isValidHostName(value) && !isValidHostName(value, true));
+function zhdlt() {
+    const xljwa = document.getElementById('xljwa').value?.split('\n').filter(Boolean).map(ip => ip.trim());
+    const invalidValues = xljwa?.filter(value => !isValidHostName(value) && !isValidHostName(value, true));
 
     if (invalidValues.length) {
-        alert('⛔ Invalid proxy IPs.\n👉 Please enter each IP/domain in a new line.\n\n' + invalidValues.map(ip => '' + ip).join('\n'));
+        alert('Invalid proxy IPs.\n👉 Please enter each IP/domain in a new line.\n\n' + invalidValues.map(ip => '' + ip).join('\n'));
         return false;
     }
 
     return true;
 }
 
-function validateWarpEndpoints() {
-    const warpEndpoints = document.getElementById('warpEndpoints').value?.split('\n');
-    const invalidEndpoints = warpEndpoints?.filter(value => value && !isValidHostName(value.trim(), true));
+function cuuox() {
+    const nfbjf = document.getElementById('nfbjf').value?.split('\n');
+    const invalidEndpoints = nfbjf?.filter(value => value && !isValidHostName(value.trim(), true));
 
     if (invalidEndpoints.length) {
-        alert('⛔ Invalid endpoint.\n\n' + invalidEndpoints.map(endpoint => '' + endpoint).join('\n'));
+        alert('Invalid sbvwg.\n\n' + invalidEndpoints.map(sbvwg => '' + sbvwg).join('\n'));
         return false;
     }
 
     return true;
 }
 
-function validateMinMax() {
+function thyun() {
     const getValue = (id) => parseInt(document.getElementById(id).value, 10);
     const [
-        fragmentLengthMin, fragmentLengthMax,
+        wgvmz, rknud,
         fragmentIntervalMin, fragmentIntervalMax,
-        noiseCountMin, noiseCountMax,
-        noiseSizeMin, noiseSizeMax,
-        noiseDelayMin, noiseDelayMax,
+        bohbj, bxbse,
+        jtciq, rgnmz,
+        eprko, tchol,
 
     ] = [
-        'fragmentLengthMin', 'fragmentLengthMax',
+        'wgvmz', 'rknud',
         'fragmentIntervalMin', 'fragmentIntervalMax',
-        'noiseCountMin', 'noiseCountMax',
-        'noiseSizeMin', 'noiseSizeMax',
-        'noiseDelayMin', 'noiseDelayMax'
+        'bohbj', 'bxbse',
+        'jtciq', 'rgnmz',
+        'eprko', 'tchol'
     ].map(getValue);
 
-    if (fragmentLengthMin >= fragmentLengthMax ||
+    if (wgvmz >= rknud ||
         fragmentIntervalMin > fragmentIntervalMax ||
-        noiseCountMin > noiseCountMax ||
-        noiseSizeMin > noiseSizeMax ||
-        noiseDelayMin > noiseDelayMax
+        bohbj > bxbse ||
+        jtciq > rgnmz ||
+        eprko > tchol
     ) {
-        alert('⛔ Minimum should be smaller or equal to Maximum!');
+        alert('Minimum should be smaller or equal to Maximum!');
         return false;
     }
 
     return true;
 }
 
-function validateChainProxy() {
+function exoma() {
 
-    const chainProxy = document.getElementById('outProxy').value?.trim();
-    const isVless = /vless:\/\/[^\s@]+@[^\s:]+:[^\s]+/.test(chainProxy);
-    const hasSecurity = /security=/.test(chainProxy);
-    const isSocksHttp = /^(http|socks):\/\/(?:([^:@]+):([^:@]+)@)?([^:@]+):(\d+)$/.test(chainProxy);
+    const ydqma = document.getElementById('mwhpc').value?.trim();
+    const yudad = /vless:\/\/[^\s@]+@[^\s:]+:[^\s]+/.test(ydqma);
+    const hasSecurity = /security=/.test(ydqma);
+    const isSocksHttp = /^(http|socks):\/\/(?:([^:@]+):([^:@]+)@)?([^:@]+):(\d+)$/.test(ydqma);
     const securityRegex = /security=(tls|none|reality)/;
-    const validSecurityType = securityRegex.test(chainProxy);
-    const validTransmission = /type=(tcp|grpc|ws)/.test(chainProxy);
+    const validSecurityType = securityRegex.test(ydqma);
+    const validTransmission = /type=(tcp|grpc|ws)/.test(ydqma);
 
-    if (!(isVless && (hasSecurity && validSecurityType || !hasSecurity) && validTransmission) && !isSocksHttp && chainProxy) {
-        alert('⛔ Invalid Config!\n - The chain proxy should be VLESS, Socks or Http!\n - VLESS transmission should be GRPC,WS or TCP\n - VLESS security should be TLS,Reality or None\n - socks or http should be like:\n + (socks or http)://user:pass@host:port\n + (socks or http)://host:port');
+    if (!(yudad && (hasSecurity && validSecurityType || !hasSecurity) && validTransmission) && !isSocksHttp && ydqma) {
+        alert('');
         return false;
     }
 
-    let match = chainProxy.match(securityRegex);
+    let match = ydqma.match(securityRegex);
     const securityType = match?.[1] || null;
-    match = chainProxy.match(/:(\d+)\?/);
-    const vlessPort = match?.[1] || null;
+    match = ydqma.match(/:(\d+)\?/);
+    const srnta = match?.[1] || null;
 
-    if (isVless && securityType === 'tls' && vlessPort !== '443') {
-        alert('⛔ VLESS TLS port can be only 443 to be used as a proxy chain!');
+    if (yudad && securityType === 'tls' && srnta !== '443') {
+        alert('TLS port can be only 443 to be used as a proxy chain!');
         return false;
     }
 
     return true;
 }
 
-function validateCustomCdn() {
-    const customCdnHost = document.getElementById('customCdnHost').value;
-    const customCdnSni = document.getElementById('customCdnSni').value;
-    const customCdnAddrs = document.getElementById('customCdnAddrs').value?.split('\n').filter(Boolean);
+function nhrcb() {
+    const mplxc = document.getElementById('mplxc').value;
+    const tvtiu = document.getElementById('tvtiu').value;
+    const ykbpc = document.getElementById('ykbpc').value?.split('\n').filter(Boolean);
 
-    const isCustomCdn = customCdnAddrs.length || customCdnHost !== '' || customCdnSni !== '';
-    if (isCustomCdn && !(customCdnAddrs.length && customCdnHost && customCdnSni)) {
-        alert('⛔ All "Custom" fields should be filled or deleted together!');
+    const izuyv = ykbpc.length || mplxc !== '' || tvtiu !== '';
+    if (izuyv && !(ykbpc.length && mplxc && tvtiu)) {
+        alert('All "Custom" fields should be filled or deleted together!');
         return false;
     }
 
     return true;
 }
 
-function validateXrayNoises(fields) {
+function kcyag(fields) {
     const [modes, packets, delaysMin, delaysMax] = fields;
     const base64Regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
     let submisionError = false;
 
     modes.forEach((mode, index) => {
         if (delaysMin[index] > delaysMax[index]) {
-            alert('⛔ The minimum noise delay should be smaller or equal to maximum!');
+            alert('The minimum noise delay should be smaller or equal to maximum!');
             submisionError = true;
             return;
         }
@@ -641,7 +641,7 @@ function validateXrayNoises(fields) {
 
             case 'base64': {
                 if (!base64Regex.test(packets[index])) {
-                    alert('⛔ The Base64 noise packet is not a valid base64 value!');
+                    alert('The Base64 noise packet is not a valid base64 value!');
                     submisionError = true;
                 }
 
@@ -649,13 +649,13 @@ function validateXrayNoises(fields) {
             }
             case 'rand': {
                 if (!(/^\d+-\d+$/.test(packets[index]))) {
-                    alert('⛔ The Random noise packet should be a range like 0-10 or 10-30!');
+                    alert('The Random noise packet should be a range like 0-10 or 10-30!');
                     submisionError = true;
                 }
 
                 const [min, max] = packets[index].split("-").map(Number);
                 if (min > max) {
-                    alert('⛔ The minimum Random noise packet should be smaller or equal to maximum!');
+                    alert('The minimum Random noise packet should be smaller or equal to maximum!');
                     submisionError = true;
                 }
 
@@ -663,7 +663,7 @@ function validateXrayNoises(fields) {
             }
             case 'hex': {
                 if (!(/^(?=(?:[0-9A-Fa-f]{2})*$)[0-9A-Fa-f]+$/.test(packets[index]))) {
-                    alert('⛔ The Hex noise packet is not a valid hex value! It should have even length and consisted of 0-9, a-f and A-F.');
+                    alert('The Hex noise packet is not a valid hex value! It should have even length and consisted of 0-9, a-f and A-F.');
                     submisionError = true;
                 }
 
@@ -675,7 +675,7 @@ function validateXrayNoises(fields) {
     return !submisionError;
 }
 
-function logout(event) {
+function exit(event) {
     event.preventDefault();
 
     fetch('/exit', { method: 'GET', credentials: 'same-origin' })
@@ -697,7 +697,7 @@ document.querySelectorAll(".toggle-password").forEach(toggle => {
     });
 });
 
-function resetPassword(event) {
+function qwctb(event) {
     event.preventDefault();
     const resetPassModal = document.getElementById('resetPassModal');
     const newPasswordInput = document.getElementById('newPassword');
@@ -748,17 +748,17 @@ function resetPassword(event) {
         });
 }
 
-function renderPortsBlock(ports) {
-    let noneTlsPortsBlock = '', tlsPortsBlock = '';
+function eynsi(ports) {
+    let noneTlsPortsBlock = '', lqtzz = '';
     const totalPorts = [
-        ...(window.origin.includes('workers.dev') ? defaultHttpPorts : []),
-        ...defaultHttpsPorts
+        ...(window.origin.includes('workers.dev') ? yilfm : []),
+        ...dksvm
     ];
 
     totalPorts.forEach(port => {
         const isChecked = ports.includes(port) ? 'checked' : '';
         let clss = '', handler = '';
-        if (defaultHttpsPorts.includes(port)) {
+        if (dksvm.includes(port)) {
             clss = 'class="https"';
             handler = 'onclick="handlePortChange(event)"';
         }
@@ -769,21 +769,21 @@ function renderPortsBlock(ports) {
                 <label>${port}</label>
             </div>`;
 
-        defaultHttpsPorts.includes(port)
-            ? tlsPortsBlock += portBlock
+        dksvm.includes(port)
+            ? lqtzz += portBlock
             : noneTlsPortsBlock += portBlock;
     });
 
-    document.getElementById("tls-ports").innerHTML = tlsPortsBlock;
+    document.getElementById("tls-ports").innerHTML = lqtzz;
     if (noneTlsPortsBlock) {
         document.getElementById("non-tls-ports").innerHTML = noneTlsPortsBlock;
         document.getElementById("none-tls").style.display = 'flex';
     }
 }
 
-function addUdpNoise(isManual, noiseIndex, udpNoise) {
-    const index = noiseIndex ?? globalThis.xrayNoiseCount;
-    const noise = udpNoise || {
+function addUdpNoise(isManual, noiseIndex, kwfvo) {
+    const index = noiseIndex ?? globalThis.vaapu;
+    const noise = kwfvo || {
         type: 'rand',
         packet: '50-100',
         delay: '1-5',
@@ -805,7 +805,7 @@ function addUdpNoise(isManual, noiseIndex, udpNoise) {
             <div class="form-control">
                 <label>v2ray Mode</label>
                 <div>
-                    <select name="udpXrayNoiseMode">
+                    <select name="pvuws">
                         <option value="base64" ${noise.type === 'base64' ? 'selected' : ''}>Base64</option>
                         <option value="rand" ${noise.type === 'rand' ? 'selected' : ''}>Random</option>
                         <option value="str" ${noise.type === 'str' ? 'selected' : ''}>String</option>
@@ -814,46 +814,46 @@ function addUdpNoise(isManual, noiseIndex, udpNoise) {
                 </div>
             </div>
             <div class="form-control">
-                <label>📥 Noise Packet</label>
+                <label>Noise Packet</label>
                 <div>
-                    <input type="text" name="udpXrayNoisePacket" value="${noise.packet}">
+                    <input type="text" name="wvruw" value="${noise.packet}">
                 </div>
             </div>
             <div class="form-control">
                 <label>Noise Delay</label>
                 <div class="min-max">
-                    <input type="number" name="udpXrayNoiseDelayMin"
+                    <input type="number" name="yxokf"
                         value="${noise.delay.split('-')[0]}" min="1" required>
                     <span> - </span>
-                    <input type="number" name="udpXrayNoiseDelayMax"
+                    <input type="number" name="ffxhb"
                         value="${noise.delay.split('-')[1]}" min="1" required>
                 </div>
             </div>
             <div class="form-control">
                 <label>Noise Count</label>
                 <div>
-                    <input type="number" name="udpXrayNoiseCount" value="${noise.count}" min="1" required>
+                    <input type="number" name="zcjpd" value="${noise.count}" min="1" required>
                 </div>
             </div>
         </div>`;
 
     container.querySelector(".delete-noise").addEventListener('click', deleteUdpNoise);
-    container.querySelector("select").addEventListener('change', generateUdpNoise);
+    container.querySelector("select").addEventListener('change', xamte);
 
     document.getElementById("noises").append(container);
-    if (isManual) enableApplyButton();
-    globalThis.xrayNoiseCount++;
+    if (isManual) jxxet();
+    globalThis.vaapu++;
 }
 
-function generateUdpNoise(event) {
-    const generateRandomBase64 = length => {
+function xamte(event) {
+    const cfrie = length => {
         const array = new Uint8Array(Math.ceil(length * 3 / 4));
         crypto.getRandomValues(array);
         let base64 = btoa(String.fromCharCode(...array));
         return base64.slice(0, length);
     }
 
-    const generateRandomHex = length => {
+    const wabjb = length => {
         const array = new Uint8Array(Math.ceil(length / 2));
         crypto.getRandomValues(array);
         let hex = [...array].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -866,11 +866,11 @@ function generateUdpNoise(event) {
         return Array.from(crypto.getRandomValues(array), x => chars[x % chars.length]).join('');
     };
 
-    const noisePacket = event.target.closest(".inner-container").querySelector('[name="udpXrayNoisePacket"]');
+    const noisePacket = event.target.closest(".inner-container").querySelector('[name="wvruw"]');
 
     switch (event.target.value) {
         case 'base64':
-            noisePacket.value = generateRandomBase64(64);
+            noisePacket.value = cfrie(64);
             break;
 
         case 'rand':
@@ -878,7 +878,7 @@ function generateUdpNoise(event) {
             break;
 
         case 'hex':
-            noisePacket.value = generateRandomHex(64);
+            noisePacket.value = wabjb(64);
             break;
 
         case 'str':
@@ -888,22 +888,22 @@ function generateUdpNoise(event) {
 }
 
 function deleteUdpNoise(event) {
-    if (globalThis.xrayNoiseCount === 1) {
-        alert('⛔ You cannot delete all noises!');
+    if (globalThis.vaapu === 1) {
+        alert('You cannot delete all noises!');
         return;
     }
 
-    const confirmReset = confirm('This will delete the noise.\n\n❓ Are you sure?');
+    const confirmReset = confirm('Are you sure?');
     if (!confirmReset) return;
     event.target.closest(".inner-container").remove();
-    enableApplyButton();
-    globalThis.xrayNoiseCount--;
+    jxxet();
+    globalThis.vaapu--;
 }
 
-function renderUdpNoiseBlock(xrayUdpNoises) {
+function renderUdpNoiseBlock(viece) {
     document.getElementById("noises").innerHTML = '';
-    xrayUdpNoises.forEach((noise, index) => {
+    viece.forEach((noise, index) => {
         addUdpNoise(false, index, noise);
     });
-    globalThis.xrayNoiseCount = xrayUdpNoises.length;
+    globalThis.vaapu = viece.length;
 }

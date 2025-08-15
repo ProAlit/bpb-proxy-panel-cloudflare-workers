@@ -9,11 +9,11 @@ export async function generateJWTToken(request, env) {
     if (password !== savedPass) return await respond(false, 401, 'Wrong password.');
     let secretKey = await env.S.get('secretKey');
     if (!secretKey) {
-        secretKey = generateSecretKey();
+        secretKey = xufkd();
         await env.S.put('secretKey', secretKey);
     }
     const secret = new TextEncoder().encode(secretKey);
-    const jwtToken = await new SignJWT({ userID: globalThis.userID })
+    const jwtToken = await new SignJWT({ hfruk: globalThis.hfruk })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('24h')
@@ -25,12 +25,12 @@ export async function generateJWTToken(request, env) {
     });
 }
 
-function generateSecretKey() {
+function xufkd() {
     const key = randomBytes(32);
     return Array.from(key, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-export async function Authenticate(request, env) {
+export async function jekni(request, env) {
     try {
         const secretKey = await env.S.get('secretKey');
         const secret = new TextEncoder().encode(secretKey);
@@ -43,7 +43,7 @@ export async function Authenticate(request, env) {
         }
 
         const { payload } = await jwtVerify(token, secret);
-        console.log(`Successfully authenticated, User ID: ${payload.userID}`);
+        console.log(`Successfully authenticated, User ID: ${payload.hfruk}`);
         return true;
     } catch (error) {
         console.log(error);
@@ -51,15 +51,15 @@ export async function Authenticate(request, env) {
     }
 }
 
-export async function logout() {
+export async function exit() {
     return await respond(true, 200, 'Successfully logged out!', null, {
         'Set-Cookie': 'jwtToken=; Secure; SameSite=None; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
         'Content-Type': 'text/plain'
     });
 }
 
-export async function resetPassword(request, env) {
-    let auth = await Authenticate(request, env);
+export async function qwctb(request, env) {
+    let auth = await jekni(request, env);
     const oldPwd = await env.S.get('pwd');
     if (oldPwd && !auth) return await respond(false, 401, 'Unauthorized.');
     const newPwd = await request.text();

@@ -1,114 +1,114 @@
-import { getDomain, resolveDNS } from '../clients/helpers';
-import { fetchWarpConfigs } from '../types/w';
+import { msupl, lyhdd } from '../clients/helpers';
+import { dnupd } from '../types/w';
 
-export async function getDataset(request, env) {
-    let proxySettings, warpConfigs;
+export async function nfmif(request, env) {
+    let fkvzd, ucdin;
 
     try {
-        proxySettings = await env.S.get("proxySettings", { type: 'json' });
-        warpConfigs = await env.S.get('warpConfigs', { type: 'json' });
+        fkvzd = await env.S.get("fkvzd", { type: 'json' });
+        ucdin = await env.S.get('ucdin', { type: 'json' });
     } catch (error) {
         console.log(error);
         throw new Error(`An error occurred while getting S - ${error}`);
     }
 
-    if (!proxySettings) {
-        proxySettings = await updateDataset(request, env);
-        const configs = await fetchWarpConfigs(env);
-        warpConfigs = configs;
+    if (!fkvzd) {
+        fkvzd = await wmbcn(request, env);
+        const configs = await dnupd(env);
+        ucdin = configs;
     }
 
-    if (globalThis.panelVersion !== proxySettings.panelVersion) proxySettings = await updateDataset(request, env);
-    return { proxySettings, warpConfigs }
+    if (globalThis.panelVersion !== fkvzd.panelVersion) fkvzd = await wmbcn(request, env);
+    return { fkvzd, ucdin }
 }
 
-export async function updateDataset(request, env) {
+export async function wmbcn(request, env) {
     let newSettings = request.method === 'POST' ? await request.json() : null;
-    const isReset = newSettings?.resetSettings;
+    const isReset = newSettings?.wiipf;
     let currentSettings;
     if (!isReset) {
         try {
-            currentSettings = await env.S.get("proxySettings", { type: 'json' });
+            currentSettings = await env.S.get("fkvzd", { type: 'json' });
         } catch (error) {
             console.log(error);
             throw new Error(`An error occurred while getting current S settings - ${error}`);
         }
     }
     
-    const populateField = (field, defaultValue, callback) => {
+    const mpxnb = (field, defaultValue, callback) => {
         if (isReset) return defaultValue;
         if (!newSettings) return currentSettings?.[field] ?? defaultValue;
         const value = newSettings[field];
         return typeof callback === 'function' ? callback(value) : value;
     }
 
-    const remoteDNS = populateField('remoteDNS', 'https://8.8.8.8/dns-query');
+    const npihj = mpxnb('npihj', 'https://freedns.controld.com/p2');
     const initDoh = async () => {
-        const { host, isHostDomain } = getDomain(remoteDNS);
-        const dohHost = {
+        const { host, isHostDomain } = msupl(npihj);
+        const dqnol = {
             host,
-            isDomain: isHostDomain
+            ifvza: isHostDomain
         }
 
         if (isHostDomain) {
-            const { ipv4, ipv6 } = await resolveDNS(host);
-            dohHost.ipv4 = ipv4;
-            dohHost.ipv6 = ipv6;
+            const { ipv4, ipv6 } = await lyhdd(host);
+            dqnol.ipv4 = ipv4;
+            dqnol.ipv6 = ipv6;
         }
 
-        return dohHost;
+        return dqnol;
     }
 
     const settings = {
-        remoteDNS,
-        dohHost: await initDoh(), 
-        localDNS: populateField('localDNS', '76.76.2.2'),
-        antiSanctionDNS: populateField('antiSanctionDNS', '78.157.42.100'),
-        VLTRFakeDNS: populateField('VLTRFakeDNS', false),
-        proxyIPs: populateField('proxyIPs', []),
-        outProxy: populateField('outProxy', ''),
-        outProxyParams: populateField('outProxy', {}, field => extractChainProxyParams(field)),
-        cleanIPs: populateField('cleanIPs', []),
-        VLTRenableIPv6: populateField('VLTRenableIPv6', true),
-        customCdnAddrs: populateField('customCdnAddrs', []),
-        customCdnHost: populateField('customCdnHost', ''),
-        customCdnSni: populateField('customCdnSni', ''),
-        bestVLTRInterval: populateField('bestVLTRInterval', 30),
-        VLConfigs: populateField('VLConfigs', true),
-        TRConfigs: populateField('TRConfigs', true),
-        ports: populateField('ports', [443, 8443, 2053, 2083, 2087, 2096, 80, 8080, 2052, 2082, 2086, 2095, 8880]),
-        fragmentLengthMin: populateField('fragmentLengthMin', 100),
-        fragmentLengthMax: populateField('fragmentLengthMax', 200),
-        fragmentIntervalMin: populateField('fragmentIntervalMin', 1),
-        fragmentIntervalMax: populateField('fragmentIntervalMax', 1),
-        fragmentPackets: populateField('fragmentPackets', 'tlshello'),
-        bypassLAN: populateField('bypassLAN', true),
-        bypassIran: populateField('bypassIran', true),
-        bypassChina: populateField('bypassChina', false),
-        bypassRussia: populateField('bypassRussia', false),
-        bypassOpenAi: populateField('bypassOpenAi', true),
-        bypassMicrosoft: populateField('bypassMicrosoft', true),
-        bypassOracle: populateField('bypassOracle', true),
-        bypassDocker: populateField('bypassDocker', true),
-        bypassAdobe: populateField('bypassAdobe', true),
-        bypassEpicGames: populateField('bypassEpicGames', true),
-        bypassIntel: populateField('bypassIntel', true),
-        bypassAmd: populateField('bypassAmd', true),
-        bypassNvidia: populateField('bypassNvidia', true),
-        bypassAsus: populateField('bypassAsus', true),
-        bypassHp: populateField('bypassHp', true),
-        bypassLenovo: populateField('bypassLenovo', true),
-        blockAds: populateField('blockAds', true),
-        blockPorn: populateField('blockPorn', false),
-        blockUDP443: populateField('blockUDP443', false),
-        customBypassRules: populateField('customBypassRules', []),
-        customBlockRules: populateField('customBlockRules', []),
-        customBypassSanctionRules: populateField('customBypassSanctionRules', []),
-        warpEndpoints: populateField('warpEndpoints', ['engage.cloudflareclient.com:2408']),
-        warpFakeDNS: populateField('warpFakeDNS', true),
-        warpEnableIPv6: populateField('warpEnableIPv6', true),
-        bestWarpInterval: populateField('bestWarpInterval', 30),
-        xrayUdpNoises: populateField('xrayUdpNoises', [
+        npihj,
+        dqnol: await initDoh(), 
+        eyjft: mpxnb('eyjft', '76.76.2.2'),
+        owphv: mpxnb('owphv', '78.157.42.100'),
+        rmyls: mpxnb('rmyls', false),
+        xljwa: mpxnb('xljwa', []),
+        mwhpc: mpxnb('mwhpc', ''),
+        outProxyParams: mpxnb('mwhpc', {}, field => lxftw(field)),
+        urrak: mpxnb('urrak', []),
+        iuixd: mpxnb('iuixd', true),
+        ykbpc: mpxnb('ykbpc', []),
+        mplxc: mpxnb('mplxc', ''),
+        tvtiu: mpxnb('tvtiu', ''),
+        qvwlq: mpxnb('qvwlq', 30),
+        plfzn: mpxnb('plfzn', true),
+        zgull: mpxnb('zgull', true),
+        ports: mpxnb('ports', [443, 8443, 2053, 2083, 2087, 2096, 80, 8080, 2052, 2082, 2086, 2095, 8880]),
+        wgvmz: mpxnb('wgvmz', 100),
+        rknud: mpxnb('rknud', 200),
+        fragmentIntervalMin: mpxnb('fragmentIntervalMin', 1),
+        fragmentIntervalMax: mpxnb('fragmentIntervalMax', 1),
+        vkojf: mpxnb('vkojf', 'tlshello'),
+        hwinp: mpxnb('hwinp', true),
+        czypj: mpxnb('czypj', true),
+        buvbb: mpxnb('buvbb', false),
+        dbaix: mpxnb('dbaix', false),
+        wusgu: mpxnb('wusgu', true),
+        kybqw: mpxnb('kybqw', true),
+        kegcg: mpxnb('kegcg', true),
+        gnmkl: mpxnb('gnmkl', true),
+        bpmhq: mpxnb('bpmhq', true),
+        lhykb: mpxnb('lhykb', true),
+        ibcgq: mpxnb('ibcgq', true),
+        vgzkc: mpxnb('vgzkc', true),
+        diqol: mpxnb('diqol', true),
+        fhjyg: mpxnb('fhjyg', true),
+        sjtat: mpxnb('sjtat', true),
+        shrnl: mpxnb('shrnl', true),
+        mfios: mpxnb('mfios', true),
+        sestc: mpxnb('sestc', false),
+        vgcfx: mpxnb('vgcfx', false),
+        grnqd: mpxnb('grnqd', []),
+        tamos: mpxnb('tamos', []),
+        flmxj: mpxnb('flmxj', []),
+        nfbjf: mpxnb('nfbjf', ['engage.cloudflareclient.com:2408']),
+        yygbp: mpxnb('yygbp', true),
+        aczdc: mpxnb('aczdc', true),
+        nzqku: mpxnb('nzqku', 30),
+        viece: mpxnb('viece', [
             {
                 type: 'rand',
                 packet: '50-100',
@@ -116,22 +116,22 @@ export async function updateDataset(request, env) {
                 count: 5
             }
         ]),
-        hiddifyNoiseMode: populateField('hiddifyNoiseMode', 'm4'),
-        knockerNoiseMode: populateField('knockerNoiseMode', 'quic'),
-        noiseCountMin: populateField('noiseCountMin', 10),
-        noiseCountMax: populateField('noiseCountMax', 15),
-        noiseSizeMin: populateField('noiseSizeMin', 5),
-        noiseSizeMax: populateField('noiseSizeMax', 10),
-        noiseDelayMin: populateField('noiseDelayMin', 1),
-        noiseDelayMax: populateField('noiseDelayMax', 1),
-        amneziaNoiseCount: populateField('amneziaNoiseCount', 5),
-        amneziaNoiseSizeMin: populateField('amneziaNoiseSizeMin', 50),
-        amneziaNoiseSizeMax: populateField('amneziaNoiseSizeMax', 100),
+        ciopx: mpxnb('ciopx', 'm4'),
+        knockerNoiseMode: mpxnb('knockerNoiseMode', 'quic'),
+        bohbj: mpxnb('bohbj', 10),
+        bxbse: mpxnb('bxbse', 15),
+        jtciq: mpxnb('jtciq', 5),
+        rgnmz: mpxnb('rgnmz', 10),
+        eprko: mpxnb('eprko', 1),
+        tchol: mpxnb('tchol', 1),
+        muanl: mpxnb('muanl', 5),
+        cubtg: mpxnb('cubtg', 50),
+        bbdwc: mpxnb('bbdwc', 100),
         panelVersion: globalThis.panelVersion
     };
 
     try {
-        await env.S.put("proxySettings", JSON.stringify(settings));
+        await env.S.put("fkvzd", JSON.stringify(settings));
     } catch (error) {
         console.log(error);
         throw new Error(`An error occurred while updating S - ${error}`);
@@ -140,14 +140,14 @@ export async function updateDataset(request, env) {
     return settings;
 }
 
-function extractChainProxyParams(chainProxy) {
-    let configParams = {};
-    if (!chainProxy) return {};
-    const url = new URL(chainProxy);
+function lxftw(ydqma) {
+    let asqlu = {};
+    if (!ydqma) return {};
+    const url = new URL(ydqma);
     const protocol = url.protocol.slice(0, -1);
     if (protocol === atob('dmxlc3M=')) {
         const params = new URLSearchParams(url.search);
-        configParams = {
+        asqlu = {
             protocol: protocol,
             uuid: url.username,
             server: url.hostname,
@@ -155,10 +155,10 @@ function extractChainProxyParams(chainProxy) {
         };
 
         params.forEach((value, key) => {
-            configParams[key] = value;
+            asqlu[key] = value;
         });
     } else {
-        configParams = {
+        asqlu = {
             protocol: protocol,
             user: url.username,
             pass: url.password,
@@ -167,5 +167,5 @@ function extractChainProxyParams(chainProxy) {
         };
     }
 
-    return configParams;
+    return asqlu;
 }

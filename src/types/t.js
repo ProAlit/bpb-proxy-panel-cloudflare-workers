@@ -3,23 +3,23 @@
 import { connect } from 'cloudflare:sockets';
 import { sha224 } from 'js-sha256';
 
-export async function TROverWSHandler(request) {
-    const webSocketPair = new WebSocketPair();
+export async function pyenv(request) {
+    const webSocketPair = new dpthn();
     const [client, webSocket] = Object.values(webSocketPair);
     webSocket.accept();
     let address = "";
-    let portWithRandomLog = "";
+    let bzbpm = "";
     const log = (info, event) => {
-        console.log(`[${address}:${portWithRandomLog}] ${info}`, event || "");
+        console.log(`[${address}:${bzbpm}] ${info}`, event || "");
     };
-    const earlyDataHeader = request.headers.get("sec-websocket-protocol") || "";
-    const readableWebSocketStream = makeReadableWebSocketStream(webSocket, earlyDataHeader, log);
+    const uoucr = request.headers.get("sec-websocket-protocol") || "";
+    const qmrgt = thazi(webSocket, uoucr, log);
     let remoteSocketWapper = {
         value: null,
     };
     let udpStreamWrite = null;
 
-    readableWebSocketStream
+    qmrgt
         .pipeTo(
             new WritableStream({
                 async write(chunk, controller) {
@@ -40,28 +40,28 @@ export async function TROverWSHandler(request) {
                         portRemote = 443,
                         addressRemote = "",
                         rawClientData,
-                    } = parseTRHeader(chunk);
+                    } = yotcq(chunk);
 
                     address = addressRemote;
-                    portWithRandomLog = `${portRemote}--${Math.random()} tcp`;
+                    bzbpm = `${portRemote}--${Math.random()} tcp`;
 
                     if (hasError) {
                         throw new Error(message);
                         // return;
                     }
 
-                    handleTCPOutBound(remoteSocketWapper, addressRemote, portRemote, rawClientData, webSocket, log);
+                    rhxei(remoteSocketWapper, addressRemote, portRemote, rawClientData, webSocket, log);
                 },
                 close() {
-                    log(`readableWebSocketStream is closed`);
+                    log(`qmrgt is closed`);
                 },
                 abort(reason) {
-                    log(`readableWebSocketStream is aborted`, JSON.stringify(reason));
+                    log(`qmrgt is aborted`, JSON.stringify(reason));
                 },
             })
         )
         .catch((err) => {
-            log("readableWebSocketStream pipeTo error", err);
+            log("qmrgt pipeTo error", err);
         });
 
     return new Response(null, {
@@ -71,7 +71,7 @@ export async function TROverWSHandler(request) {
     });
 }
 
-function parseTRHeader(buffer) {
+function yotcq(buffer) {
     if (buffer.byteLength < 56) {
         return {
             hasError: true,
@@ -88,22 +88,22 @@ function parseTRHeader(buffer) {
     }
 
     const password = new TextDecoder().decode(buffer.slice(0, crLfIndex));
-    if (password !== sha224(globalThis.TRPassword)) {
+    if (password !== sha224(globalThis.ffzll)) {
         return {
             hasError: true,
             message: "invalid password",
         };
     }
 
-    const socks5DataBuffer = buffer.slice(crLfIndex + 2);
-    if (socks5DataBuffer.byteLength < 6) {
+    const mqbsg = buffer.slice(crLfIndex + 2);
+    if (mqbsg.byteLength < 6) {
         return {
             hasError: true,
             message: "invalid SOCKS5 request data",
         };
     }
 
-    const view = new DataView(socks5DataBuffer);
+    const view = new DataView(mqbsg);
     const cmd = view.getUint8(0);
     if (cmd !== 1) {
         return {
@@ -122,16 +122,16 @@ function parseTRHeader(buffer) {
     switch (atype) {
         case 1:
             addressLength = 4;
-            address = new Uint8Array(socks5DataBuffer.slice(addressIndex, addressIndex + addressLength)).join(".");
+            address = new Uint8Array(mqbsg.slice(addressIndex, addressIndex + addressLength)).join(".");
             break;
         case 3:
-            addressLength = new Uint8Array(socks5DataBuffer.slice(addressIndex, addressIndex + 1))[0];
+            addressLength = new Uint8Array(mqbsg.slice(addressIndex, addressIndex + 1))[0];
             addressIndex += 1;
-            address = new TextDecoder().decode(socks5DataBuffer.slice(addressIndex, addressIndex + addressLength));
+            address = new TextDecoder().decode(mqbsg.slice(addressIndex, addressIndex + addressLength));
             break;
         case 4: {
             addressLength = 16;
-            const dataView = new DataView(socks5DataBuffer.slice(addressIndex, addressIndex + addressLength));
+            const dataView = new DataView(mqbsg.slice(addressIndex, addressIndex + addressLength));
             const ipv6 = [];
             for (let i = 0; i < 8; i++) {
                 ipv6.push(dataView.getUint16(i * 2).toString(16));
@@ -154,13 +154,13 @@ function parseTRHeader(buffer) {
     }
 
     const portIndex = addressIndex + addressLength;
-    const portBuffer = socks5DataBuffer.slice(portIndex, portIndex + 2);
+    const portBuffer = mqbsg.slice(portIndex, portIndex + 2);
     const portRemote = new DataView(portBuffer).getUint16(0);
     return {
         hasError: false,
         addressRemote: address,
         portRemote,
-        rawClientData: socks5DataBuffer.slice(portIndex + 4),
+        rawClientData: mqbsg.slice(portIndex + 4),
     };
 }
 
@@ -175,7 +175,7 @@ function parseTRHeader(buffer) {
  * @param {function} log The logging function.
  * @returns {Promise<void>} The remote socket.
  */
-async function handleTCPOutBound(
+async function rhxei(
     remoteSocket,
     addressRemote,
     portRemote,
@@ -200,51 +200,51 @@ async function handleTCPOutBound(
 
     // if the cf connect tcp socket have no incoming data, we retry to redirect ip
     async function retry() { 
-        let proxyIP, proxyIpPort;
-        const encodedPanelProxyIPs = globalThis.pathName.split('/')[2] || '';
-        const decodedProxyIPs = encodedPanelProxyIPs ? atob(encodedPanelProxyIPs) : globalThis.proxyIPs;
-        const proxyIpList = decodedProxyIPs.split(',').map(ip => ip.trim());
-        const selectedProxyIP = proxyIpList[Math.floor(Math.random() * proxyIpList.length)];
-        if (selectedProxyIP.includes(']:')) {
-            const match = selectedProxyIP.match(/^(\[.*?\]):(\d+)$/);
-            proxyIP = match[1];
-            proxyIpPort = match[2];
+        let gtojo, anhmi;
+        const afuiz = globalThis.pathName.split('/')[2] || '';
+        const prjha = afuiz ? atob(afuiz) : globalThis.xljwa;
+        const cdsvr = prjha.split(',').map(ip => ip.trim());
+        const vapzq = cdsvr[Math.floor(Math.random() * cdsvr.length)];
+        if (vapzq.includes(']:')) {
+            const match = vapzq.match(/^(\[.*?\]):(\d+)$/);
+            gtojo = match[1];
+            anhmi = match[2];
         } else {
-            [proxyIP, proxyIpPort] = selectedProxyIP.split(':');
+            [gtojo, anhmi] = vapzq.split(':');
         }
 
-        const tcpSocket = await connectAndWrite(proxyIP || addressRemote, proxyIpPort || portRemote);
+        const tcpSocket = await connectAndWrite(gtojo || addressRemote, anhmi || portRemote);
         // no matter retry success or not, close websocket
         tcpSocket.closed
             .catch((error) => {
                 console.log("retry tcpSocket closed error", error);
             })
             .finally(() => {
-                safeCloseWebSocket(webSocket);
+                nysag(webSocket);
             });
 
-        TRRemoteSocketToWS(tcpSocket, webSocket, null, log);
+        eaxht(tcpSocket, webSocket, null, log);
     }
 
     const tcpSocket = await connectAndWrite(addressRemote, portRemote);
 
     // when remoteSocket is ready, pass to websocket
     // remote--> ws
-    TRRemoteSocketToWS(tcpSocket, webSocket, retry, log);
+    eaxht(tcpSocket, webSocket, retry, log);
 }
 
 /**
  * Creates a readable stream from a WebSocket server, allowing for data to be read from the WebSocket.
- * @param {import("@cloudflare/workers-types").WebSocket} webSocketServer The WebSocket server to create the readable stream from.
- * @param {string} earlyDataHeader The header containing early data for WebSocket 0-RTT.
+ * @param {import("@cloudflare/workers-types").WebSocket} zdxxf The WebSocket server to create the readable stream from.
+ * @param {string} uoucr The header containing early data for WebSocket 0-RTT.
  * @param {(info: string)=> void} log The logging function.
  * @returns {ReadableStream} A readable stream that can be used to read data from the WebSocket.
  */
-function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
+function thazi(zdxxf, uoucr, log) {
     let readableStreamCancel = false;
     const stream = new ReadableStream({
         start(controller) {
-            webSocketServer.addEventListener("message", (event) => {
+            zdxxf.addEventListener("message", (event) => {
                 if (readableStreamCancel) {
                     return;
                 }
@@ -255,25 +255,25 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
             // The event means that the client closed the client -> server stream.
             // However, the server -> client stream is still open until you call close() on the server side.
             // The WebSocket protocol says that a separate close message must be sent in each direction to fully close the socket.
-            webSocketServer.addEventListener("close", () => {
+            zdxxf.addEventListener("close", () => {
                 // client send close, need close server
                 // if stream is cancel, skip controller.close
-                safeCloseWebSocket(webSocketServer);
+                nysag(zdxxf);
                 if (readableStreamCancel) {
                     return;
                 }
                 controller.close();
             });
-            webSocketServer.addEventListener("error", (err) => {
-                log("webSocketServer has error");
+            zdxxf.addEventListener("error", (err) => {
+                log("zdxxf has error");
                 controller.error(err);
             });
             // for ws 0rtt
-            const { earlyData, error } = base64ToArrayBuffer(earlyDataHeader);
+            const { azync, error } = rsjsp(uoucr);
             if (error) {
                 controller.error(error);
-            } else if (earlyData) {
-                controller.enqueue(earlyData);
+            } else if (azync) {
+                controller.enqueue(azync);
             }
         },
         pull(controller) {
@@ -289,14 +289,14 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
             }
             log(`ReadableStream was canceled, due to ${reason}`);
             readableStreamCancel = true;
-            safeCloseWebSocket(webSocketServer);
+            nysag(zdxxf);
         },
     });
 
     return stream;
 }
 
-async function TRRemoteSocketToWS(remoteSocket, webSocket, retry, log) {
+async function eaxht(remoteSocket, webSocket, retry, log) {
     let hasIncomingData = false;
     await remoteSocket.readable
         .pipeTo(
@@ -323,8 +323,8 @@ async function TRRemoteSocketToWS(remoteSocket, webSocket, retry, log) {
             })
         )
         .catch((error) => {
-            console.error(`TRRemoteSocketToWS error:`, error.stack || error);
-            safeCloseWebSocket(webSocket);
+            console.error(`eaxht error:`, error.stack || error);
+            nysag(webSocket);
         });
 
     if (hasIncomingData === false && retry) {
@@ -336,20 +336,20 @@ async function TRRemoteSocketToWS(remoteSocket, webSocket, retry, log) {
 /**
  * Decodes a base64 string into an ArrayBuffer.
  * @param {string} base64Str The base64 string to decode.
- * @returns {{earlyData: ArrayBuffer|null, error: Error|null}} An object containing the decoded ArrayBuffer or null if there was an error, and any error that occurred during decoding or null if there was no error.
+ * @returns {{azync: ArrayBuffer|null, error: Error|null}} An object containing the decoded ArrayBuffer or null if there was an error, and any error that occurred during decoding or null if there was no error.
  */
-function base64ToArrayBuffer(base64Str) {
+function rsjsp(base64Str) {
     if (!base64Str) {
-        return { earlyData: null, error: null };
+        return { azync: null, error: null };
     }
     try {
         // go use modified Base64 for URL rfc4648 which js atob not support
         base64Str = base64Str.replace(/-/g, '+').replace(/_/g, '/');
         const decode = atob(base64Str);
         const arryBuffer = Uint8Array.from(decode, (c) => c.charCodeAt(0));
-        return { earlyData: arryBuffer.buffer, error: null };
+        return { azync: arryBuffer.buffer, error: null };
     } catch (error) {
-        return { earlyData: null, error };
+        return { azync: null, error };
     }
 }
 
@@ -359,12 +359,12 @@ const WS_READY_STATE_CLOSING = 2;
  * Closes a WebSocket connection safely without throwing exceptions.
  * @param {import("@cloudflare/workers-types").WebSocket} socket The WebSocket connection to close.
  */
-function safeCloseWebSocket(socket) {
+function nysag(socket) {
     try {
         if (socket.readyState === WS_READY_STATE_OPEN || socket.readyState === WS_READY_STATE_CLOSING) {
             socket.close();
         }
     } catch (error) {
-        console.error('safeCloseWebSocket error', error);
+        console.error('nysag error', error);
     }
 }

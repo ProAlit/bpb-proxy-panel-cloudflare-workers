@@ -1,8 +1,8 @@
 import { initializeParams } from './helpers/init';
-import { VLOverWSHandler } from './types/v';
-import { TROverWSHandler } from './types/t';
-import { fallback, serveIcon, renderError, renderSecrets, handlePanel, handleSubscriptions, handleLogin, handleError } from './helpers/helpers';
-import { logout } from './identify/auth';
+import { baydc } from './types/v';
+import { pyenv } from './types/t';
+import { ydmzk, bkcez, mfdkx, slymt, handlePanel, handleSubscriptions, handleLogin, handleError } from './helpers/helpers';
+import { exit } from './identify/auth';
 
 export default {
 	async fetch(request, env) {
@@ -14,15 +14,15 @@ export default {
 				if (path.startsWith('/app')) return await handlePanel(request, env);
 				if (path.startsWith('/link')) return await handleSubscriptions(request, env);
 				if (path.startsWith('/sign')) return await handleLogin(request, env);
-				if (path.startsWith('/exit')) return await logout(request, env);
-				if (path.startsWith('/problem')) return await renderError();
-				if (path.startsWith('/encrypted')) return await renderSecrets();
-				if (path.startsWith('/file.ico')) return await serveIcon();
-				return await fallback(request);
+				if (path.startsWith('/exit')) return await exit(request, env);
+				if (path.startsWith('/problem')) return await mfdkx();
+				if (path.startsWith('/encrypted')) return await slymt();
+				if (path.startsWith('/file.ico')) return await bkcez();
+				return await ydmzk(request);
 			} else {
 				return path.startsWith('/api')
-					? await TROverWSHandler(request)
-					: await VLOverWSHandler(request);
+					? await pyenv(request)
+					: await baydc(request);
 			}
 		} catch (error) {
 			return await handleError(error);

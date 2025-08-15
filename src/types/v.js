@@ -1,43 +1,43 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { connect } from 'cloudflare:sockets';
-import { isValidUUID } from '../helpers/helpers';
+import { gotnn } from '../helpers/helpers';
 
 /**
- * Handles VL over WebSocket requests by creating a WebSocket pair, accepting the WebSocket connection, and processing the VL header.
+ * Handles over WebSocket requests by creating a WebSocket pair, accepting the WebSocket connection, and processing the header.
  * @param {import("@cloudflare/workers-types").Request} request The incoming request object.
  * @returns {Promise<Response>} A Promise that resolves to a WebSocket response object.
  */
-export async function VLOverWSHandler(request) {
+export async function baydc(request) {
     /** @type {import("@cloudflare/workers-types").WebSocket[]} */
     // @ts-ignore
-    const webSocketPair = new WebSocketPair();
+    const webSocketPair = new dpthn();
     const [client, webSocket] = Object.values(webSocketPair);
 
     webSocket.accept();
 
     let address = "";
-    let portWithRandomLog = "";
+    let bzbpm = "";
     const log = (/** @type {string} */ info, /** @type {string | undefined} */ event) => {
-        console.log(`[${address}:${portWithRandomLog}] ${info}`, event || "");
+        console.log(`[${address}:${bzbpm}] ${info}`, event || "");
     };
-    const earlyDataHeader = request.headers.get("sec-websocket-protocol") || "";
+    const uoucr = request.headers.get("sec-websocket-protocol") || "";
 
-    const readableWebSocketStream = makeReadableWebSocketStream(webSocket, earlyDataHeader, log);
+    const qmrgt = thazi(webSocket, uoucr, log);
 
     /** @type {{ value: import("@cloudflare/workers-types").Socket | null}}*/
     let remoteSocketWapper = {
         value: null,
     };
     let udpStreamWrite = null;
-    let isDns = false;
+    let idkny = false;
 
     // ws --> remote
-    readableWebSocketStream
+    qmrgt
         .pipeTo(
             new WritableStream({
                 async write(chunk, controller) {
-                    if (isDns && udpStreamWrite) {
+                    if (idkny && udpStreamWrite) {
                         return udpStreamWrite(chunk);
                     }
                     if (remoteSocketWapper.value) {
@@ -53,11 +53,11 @@ export async function VLOverWSHandler(request) {
                         portRemote = 443,
                         addressRemote = "",
                         rawDataIndex,
-                        VLVersion = new Uint8Array([0, 0]),
-                        isUDP,
-                    } = processVLHeader(chunk, globalThis.userID);
+                        bbvmq = new Uint8Array([0, 0]),
+                        bompg,
+                    } = cvvmx(chunk, globalThis.hfruk);
                     address = addressRemote;
-                    portWithRandomLog = `${portRemote}--${Math.random()} ${isUDP ? "udp " : "tcp "} `;
+                    bzbpm = `${portRemote}--${Math.random()} ${bompg ? "udp " : "tcp "} `;
                     if (hasError) {
                         // controller.error(message);
                         throw new Error(message); // cf seems has bug, controller.error will not end stream
@@ -65,9 +65,9 @@ export async function VLOverWSHandler(request) {
                         // return;
                     }
                     // if UDP but port not DNS port, close it
-                    if (isUDP) {
+                    if (bompg) {
                         if (portRemote === 53) {
-                            isDns = true;
+                            idkny = true;
                         } else {
                             // controller.error('UDP proxy only enable for DNS which is port 53');
                             throw new Error("UDP proxy only enable for DNS which is port 53"); // cf seems has bug, controller.error will not end stream
@@ -75,37 +75,37 @@ export async function VLOverWSHandler(request) {
                         }
                     }
                     // ["version", "附加信息长度 N"]
-                    const VLResponseHeader = new Uint8Array([VLVersion[0], 0]);
+                    const dvlcl = new Uint8Array([bbvmq[0], 0]);
                     const rawClientData = chunk.slice(rawDataIndex);
 
                     // TODO: support udp here when cf runtime has udp support
-                    if (isDns) {
-                        const { write } = await handleUDPOutBound(webSocket, VLResponseHeader, log);
+                    if (idkny) {
+                        const { write } = await bqtvv(webSocket, dvlcl, log);
                         udpStreamWrite = write;
                         udpStreamWrite(rawClientData);
                         return;
                     }
 
-                    handleTCPOutBound(
+                    rhxei(
                         remoteSocketWapper,
                         addressRemote,
                         portRemote,
                         rawClientData,
                         webSocket,
-                        VLResponseHeader,
+                        dvlcl,
                         log
                     );
                 },
                 close() {
-                    log(`readableWebSocketStream is close`);
+                    log(`qmrgt is close`);
                 },
                 abort(reason) {
-                    log(`readableWebSocketStream is abort`, JSON.stringify(reason));
+                    log(`qmrgt is abort`, JSON.stringify(reason));
                 },
             })
         )
         .catch((err) => {
-            log("readableWebSocketStream pipeTo error", err);
+            log("qmrgt pipeTo error", err);
         });
 
     return new Response(null, {
@@ -123,17 +123,17 @@ export async function VLOverWSHandler(request) {
  * @param {number} portRemote The remote port to connect to.
  * @param {Uint8Array} rawClientData The raw client data to write.
  * @param {import("@cloudflare/workers-types").WebSocket} webSocket The WebSocket to pass the remote socket to.
- * @param {Uint8Array} VLResponseHeader The VL response header.
+ * @param {Uint8Array} dvlcl The response header.
  * @param {function} log The logging function.
  * @returns {Promise<void>} The remote socket.
  */
-async function handleTCPOutBound(
+async function rhxei(
     remoteSocket,
     addressRemote,
     portRemote,
     rawClientData,
     webSocket,
-    VLResponseHeader,
+    dvlcl,
     log
 ) {
     async function connectAndWrite(address, port) {
@@ -153,51 +153,51 @@ async function handleTCPOutBound(
 
     // if the cf connect tcp socket have no incoming data, we retry to redirect ip
     async function retry() {
-        let proxyIP, proxyIpPort;
-        const encodedPanelProxyIPs = globalThis.pathName.split('/')[2] || '';
-        const decodedProxyIPs = encodedPanelProxyIPs ? atob(encodedPanelProxyIPs) : globalThis.proxyIPs;
-        const proxyIpList = decodedProxyIPs.split(',').map(ip => ip.trim());
-        const selectedProxyIP = proxyIpList[Math.floor(Math.random() * proxyIpList.length)];
-        if (selectedProxyIP.includes(']:')) {
-            const match = selectedProxyIP.match(/^(\[.*?\]):(\d+)$/);
-            proxyIP = match[1];
-            proxyIpPort = match[2];
+        let gtojo, anhmi;
+        const afuiz = globalThis.pathName.split('/')[2] || '';
+        const prjha = afuiz ? atob(afuiz) : globalThis.xljwa;
+        const cdsvr = prjha.split(',').map(ip => ip.trim());
+        const vapzq = cdsvr[Math.floor(Math.random() * cdsvr.length)];
+        if (vapzq.includes(']:')) {
+            const match = vapzq.match(/^(\[.*?\]):(\d+)$/);
+            gtojo = match[1];
+            anhmi = match[2];
         } else {
-            [proxyIP, proxyIpPort] = selectedProxyIP.split(':');
+            [gtojo, anhmi] = vapzq.split(':');
         }
 
-        const tcpSocket = await connectAndWrite(proxyIP || addressRemote, +proxyIpPort || portRemote);
+        const tcpSocket = await connectAndWrite(gtojo || addressRemote, +anhmi || portRemote);
         // no matter retry success or not, close websocket
         tcpSocket.closed
             .catch((error) => {
                 console.log("retry tcpSocket closed error", error);
             })
             .finally(() => {
-                safeCloseWebSocket(webSocket);
+                nysag(webSocket);
             });
 
-        VLRemoteSocketToWS(tcpSocket, webSocket, VLResponseHeader, null, log);
+        tcfet(tcpSocket, webSocket, dvlcl, null, log);
     }
 
     const tcpSocket = await connectAndWrite(addressRemote, portRemote);
 
     // when remoteSocket is ready, pass to websocket
     // remote--> ws
-    VLRemoteSocketToWS(tcpSocket, webSocket, VLResponseHeader, retry, log);
+    tcfet(tcpSocket, webSocket, dvlcl, retry, log);
 }
 
 /**
  * Creates a readable stream from a WebSocket server, allowing for data to be read from the WebSocket.
- * @param {import("@cloudflare/workers-types").WebSocket} webSocketServer The WebSocket server to create the readable stream from.
- * @param {string} earlyDataHeader The header containing early data for WebSocket 0-RTT.
+ * @param {import("@cloudflare/workers-types").WebSocket} zdxxf The WebSocket server to create the readable stream from.
+ * @param {string} uoucr The header containing early data for WebSocket 0-RTT.
  * @param {(info: string)=> void} log The logging function.
  * @returns {ReadableStream} A readable stream that can be used to read data from the WebSocket.
  */
-function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
+function thazi(zdxxf, uoucr, log) {
     let readableStreamCancel = false;
     const stream = new ReadableStream({
         start(controller) {
-            webSocketServer.addEventListener("message", (event) => {
+            zdxxf.addEventListener("message", (event) => {
                 if (readableStreamCancel) {
                     return;
                 }
@@ -208,25 +208,25 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
             // The event means that the client closed the client -> server stream.
             // However, the server -> client stream is still open until you call close() on the server side.
             // The WebSocket protocol says that a separate close message must be sent in each direction to fully close the socket.
-            webSocketServer.addEventListener("close", () => {
+            zdxxf.addEventListener("close", () => {
                 // client send close, need close server
                 // if stream is cancel, skip controller.close
-                safeCloseWebSocket(webSocketServer);
+                nysag(zdxxf);
                 if (readableStreamCancel) {
                     return;
                 }
                 controller.close();
             });
-            webSocketServer.addEventListener("error", (err) => {
-                log("webSocketServer has error");
+            zdxxf.addEventListener("error", (err) => {
+                log("zdxxf has error");
                 controller.error(err);
             });
             // for ws 0rtt
-            const { earlyData, error } = base64ToArrayBuffer(earlyDataHeader);
+            const { azync, error } = rsjsp(uoucr);
             if (error) {
                 controller.error(error);
-            } else if (earlyData) {
-                controller.enqueue(earlyData);
+            } else if (azync) {
+                controller.enqueue(azync);
             }
         },
         pull(controller) {
@@ -242,7 +242,7 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
             }
             log(`ReadableStream was canceled, due to ${reason}`);
             readableStreamCancel = true;
-            safeCloseWebSocket(webSocketServer);
+            nysag(zdxxf);
         },
     });
 
@@ -250,9 +250,9 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
 }
 
 /**
- * Processes the VL header buffer and returns an object with the relevant information.
- * @param {ArrayBuffer} VLBuffer The VL header buffer to process.
- * @param {string} userID The user ID to validate against the U in the VL header.
+ * Processes the header buffer and returns an object with the relevant information.
+ * @param {ArrayBuffer} yfsap The header buffer to process.
+ * @param {string} hfruk The user ID to validate against the U in the header.
  * @returns {{
  *  hasError: boolean,
  *  message?: string,
@@ -260,23 +260,23 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
  *  addressType?: number,
  *  portRemote?: number,
  *  rawDataIndex?: number,
- *  VLVersion?: Uint8Array,
- *  isUDP?: boolean
- * }} An object with the relevant information extracted from the VL header buffer.
+ *  bbvmq?: Uint8Array,
+ *  bompg?: boolean
+ * }} An object with the relevant information extracted from the header buffer.
  */
-function processVLHeader(VLBuffer, userID) {
-    if (VLBuffer.byteLength < 24) {
+function cvvmx(yfsap, hfruk) {
+    if (yfsap.byteLength < 24) {
         return {
             hasError: true,
             message: "invalid data",
         };
     }
-    const version = new Uint8Array(VLBuffer.slice(0, 1));
+    const version = new Uint8Array(yfsap.slice(0, 1));
     let isValidUser = false;
-    let isUDP = false;
-    const slicedBuffer = new Uint8Array(VLBuffer.slice(1, 17));
+    let bompg = false;
+    const slicedBuffer = new Uint8Array(yfsap.slice(1, 17));
     const slicedBufferString = stringify(slicedBuffer);
-    isValidUser = slicedBufferString === userID;
+    isValidUser = slicedBufferString === hfruk;
 
     if (!isValidUser) {
         return {
@@ -285,16 +285,16 @@ function processVLHeader(VLBuffer, userID) {
         };
     }
 
-    const optLength = new Uint8Array(VLBuffer.slice(17, 18))[0];
+    const optLength = new Uint8Array(yfsap.slice(17, 18))[0];
     //skip opt for now
 
-    const command = new Uint8Array(VLBuffer.slice(18 + optLength, 18 + optLength + 1))[0];
+    const command = new Uint8Array(yfsap.slice(18 + optLength, 18 + optLength + 1))[0];
 
     // 0x01 TCP
     // 0x02 UDP
     // 0x03 MUX
     if (command === 1) { /* empty */ } else if (command === 2) {
-        isUDP = true;
+        bompg = true;
     } else {
         return {
             hasError: true,
@@ -302,12 +302,12 @@ function processVLHeader(VLBuffer, userID) {
         };
     }
     const portIndex = 18 + optLength + 1;
-    const portBuffer = VLBuffer.slice(portIndex, portIndex + 2);
+    const portBuffer = yfsap.slice(portIndex, portIndex + 2);
     // port is big-Endian in raw data etc 80 == 0x005d
     const portRemote = new DataView(portBuffer).getUint16(0);
 
     let addressIndex = portIndex + 2;
-    const addressBuffer = new Uint8Array(VLBuffer.slice(addressIndex, addressIndex + 1));
+    const addressBuffer = new Uint8Array(yfsap.slice(addressIndex, addressIndex + 1));
 
     // 1--> ipv4  addressLength =4
     // 2--> domain name addressLength=addressBuffer[1]
@@ -319,16 +319,16 @@ function processVLHeader(VLBuffer, userID) {
     switch (addressType) {
         case 1:
             addressLength = 4;
-            addressValue = new Uint8Array(VLBuffer.slice(addressValueIndex, addressValueIndex + addressLength)).join(".");
+            addressValue = new Uint8Array(yfsap.slice(addressValueIndex, addressValueIndex + addressLength)).join(".");
             break;
         case 2:
-            addressLength = new Uint8Array(VLBuffer.slice(addressValueIndex, addressValueIndex + 1))[0];
+            addressLength = new Uint8Array(yfsap.slice(addressValueIndex, addressValueIndex + 1))[0];
             addressValueIndex += 1;
-            addressValue = new TextDecoder().decode(VLBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+            addressValue = new TextDecoder().decode(yfsap.slice(addressValueIndex, addressValueIndex + addressLength));
             break;
         case 3: {
             addressLength = 16;
-            const dataView = new DataView(VLBuffer.slice(addressValueIndex, addressValueIndex + addressLength));
+            const dataView = new DataView(yfsap.slice(addressValueIndex, addressValueIndex + addressLength));
             // 2001:0db8:85a3:0000:0000:8a2e:0370:7334
             const ipv6 = [];
             for (let i = 0; i < 8; i++) {
@@ -357,8 +357,8 @@ function processVLHeader(VLBuffer, userID) {
         addressType,
         portRemote,
         rawDataIndex: addressValueIndex + addressLength,
-        VLVersion: version,
-        isUDP,
+        bbvmq: version,
+        bompg,
     };
 }
 
@@ -366,17 +366,17 @@ function processVLHeader(VLBuffer, userID) {
  * Converts a remote socket to a WebSocket connection.
  * @param {import("@cloudflare/workers-types").Socket} remoteSocket The remote socket to convert.
  * @param {import("@cloudflare/workers-types").WebSocket} webSocket The WebSocket to connect to.
- * @param {ArrayBuffer | null} VLResponseHeader The VL response header.
+ * @param {ArrayBuffer | null} dvlcl The response header.
  * @param {(() => Promise<void>) | null} retry The function to retry the connection if it fails.
  * @param {(info: string) => void} log The logging function.
  * @returns {Promise<void>} A Promise that resolves when the conversion is complete.
  */
-async function VLRemoteSocketToWS(remoteSocket, webSocket, VLResponseHeader, retry, log) {
+async function tcfet(remoteSocket, webSocket, dvlcl, retry, log) {
     // remote--> ws
     let remoteChunkCount = 0;
     let chunks = [];
     /** @type {ArrayBuffer | null} */
-    let VLHeader = VLResponseHeader;
+    let oqidc = dvlcl;
     let hasIncomingData = false; // check if remoteSocket has incoming data
     await remoteSocket.readable
         .pipeTo(
@@ -393,9 +393,9 @@ async function VLRemoteSocketToWS(remoteSocket, webSocket, VLResponseHeader, ret
                     if (webSocket.readyState !== WS_READY_STATE_OPEN) {
                         controller.error("webSocket.readyState is not open, maybe close");
                     }
-                    if (VLHeader) {
-                        webSocket.send(await new Blob([VLHeader, chunk]).arrayBuffer());
-                        VLHeader = null;
+                    if (oqidc) {
+                        webSocket.send(await new Blob([oqidc, chunk]).arrayBuffer());
+                        oqidc = null;
                     } else {
                         // seems no need rate limit this, CF seems fix this??..
                         // if (remoteChunkCount > 20000) {
@@ -407,7 +407,7 @@ async function VLRemoteSocketToWS(remoteSocket, webSocket, VLResponseHeader, ret
                 },
                 close() {
                     log(`remoteConnection!.readable is close with hasIncomingData is ${hasIncomingData}`);
-                    // safeCloseWebSocket(webSocket); // no need server close websocket frist for some case will casue HTTP ERR_CONTENT_LENGTH_MISMATCH issue, client will send close event anyway.
+                    // nysag(webSocket); // no need server close websocket frist for some case will casue HTTP ERR_CONTENT_LENGTH_MISMATCH issue, client will send close event anyway.
                 },
                 abort(reason) {
                     console.error(`remoteConnection!.readable abort`, reason);
@@ -415,8 +415,8 @@ async function VLRemoteSocketToWS(remoteSocket, webSocket, VLResponseHeader, ret
             })
         )
         .catch((error) => {
-            console.error(`VLRemoteSocketToWS has exception `, error.stack || error);
-            safeCloseWebSocket(webSocket);
+            console.error(`tcfet has exception `, error.stack || error);
+            nysag(webSocket);
         });
 
     // seems is cf connect socket have error,
@@ -431,20 +431,20 @@ async function VLRemoteSocketToWS(remoteSocket, webSocket, VLResponseHeader, ret
 /**
  * Decodes a base64 string into an ArrayBuffer.
  * @param {string} base64Str The base64 string to decode.
- * @returns {{earlyData: ArrayBuffer|null, error: Error|null}} An object containing the decoded ArrayBuffer or null if there was an error, and any error that occurred during decoding or null if there was no error.
+ * @returns {{azync: ArrayBuffer|null, error: Error|null}} An object containing the decoded ArrayBuffer or null if there was an error, and any error that occurred during decoding or null if there was no error.
  */
-function base64ToArrayBuffer(base64Str) {
+function rsjsp(base64Str) {
     if (!base64Str) {
-        return { earlyData: null, error: null };
+        return { azync: null, error: null };
     }
     try {
         // go use modified Base64 for URL rfc4648 which js atob not support
         base64Str = base64Str.replace(/-/g, '+').replace(/_/g, '/');
         const decode = atob(base64Str);
         const arryBuffer = Uint8Array.from(decode, (c) => c.charCodeAt(0));
-        return { earlyData: arryBuffer.buffer, error: null };
+        return { azync: arryBuffer.buffer, error: null };
     } catch (error) {
-        return { earlyData: null, error };
+        return { azync: null, error };
     }
 }
 
@@ -454,13 +454,13 @@ const WS_READY_STATE_CLOSING = 2;
  * Closes a WebSocket connection safely without throwing exceptions.
  * @param {import("@cloudflare/workers-types").WebSocket} socket The WebSocket connection to close.
  */
-function safeCloseWebSocket(socket) {
+function nysag(socket) {
     try {
         if (socket.readyState === WS_READY_STATE_OPEN || socket.readyState === WS_READY_STATE_CLOSING) {
             socket.close();
         }
     } catch (error) {
-        console.error('safeCloseWebSocket error', error);
+        console.error('nysag error', error);
     }
 }
 
@@ -497,7 +497,7 @@ function unsafeStringify(arr, offset = 0) {
 
 function stringify(arr, offset = 0) {
     const uuid = unsafeStringify(arr, offset);
-    if (!isValidUUID(uuid)) {
+    if (!gotnn(uuid)) {
         throw TypeError("Stringified U is invalid");
     }
     return uuid;
@@ -506,12 +506,12 @@ function stringify(arr, offset = 0) {
 /**
  * Handles outbound UDP traffic by transforming the data into DNS queries and sending them over a WebSocket connection.
  * @param {import("@cloudflare/workers-types").WebSocket} webSocket The WebSocket connection to send the DNS queries over.
- * @param {ArrayBuffer} VLResponseHeader The VL response header.
+ * @param {ArrayBuffer} dvlcl The response header.
  * @param {(string) => void} log The logging function.
  * @returns {{write: (chunk: Uint8Array) => void}} An object with a write method that accepts a Uint8Array chunk to write to the transform stream.
  */
-async function handleUDPOutBound(webSocket, VLResponseHeader, log) {
-    let isVLHeaderSent = false;
+async function bqtvv(webSocket, dvlcl, log) {
+    let jgbmu = false;
     const transformStream = new TransformStream({
         start(controller) { },
         transform(chunk, controller) {
@@ -549,11 +549,11 @@ async function handleUDPOutBound(webSocket, VLResponseHeader, log) {
                     const udpSizeBuffer = new Uint8Array([(udpSize >> 8) & 0xff, udpSize & 0xff]);
                     if (webSocket.readyState === WS_READY_STATE_OPEN) {
                         log(`doh success and dns message length is ${udpSize}`);
-                        if (isVLHeaderSent) {
+                        if (jgbmu) {
                             webSocket.send(await new Blob([udpSizeBuffer, dnsQueryResult]).arrayBuffer());
                         } else {
-                            webSocket.send(await new Blob([VLResponseHeader, udpSizeBuffer, dnsQueryResult]).arrayBuffer());
-                            isVLHeaderSent = true;
+                            webSocket.send(await new Blob([dvlcl, udpSizeBuffer, dnsQueryResult]).arrayBuffer());
+                            jgbmu = true;
                         }
                     }
                 },

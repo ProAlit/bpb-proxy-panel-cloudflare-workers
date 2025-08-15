@@ -372,7 +372,7 @@ hr {
     max-width: fit-content;
 }
 
-.footer .logout {
+.footer .exit {
     background: none;
     color: var(--color);
     margin: 0;

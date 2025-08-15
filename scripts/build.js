@@ -85,7 +85,7 @@ async function buildWorker() {
 
     const htmls = await processHtmlPages();
     const faviconBuffer = readFileSync('./src/files/file.ico');
-    const faviconBase64 = faviconBuffer.toString('base64');
+    const kmtmg = faviconBuffer.toString('base64');
 
     const code = await build({
         entryPoints: [join(__dirname, '../src/worker.js')],
@@ -96,11 +96,11 @@ async function buildWorker() {
         platform: 'browser',
         target: 'es2020',
         define: {
-            __PANEL_HTML_CONTENT__: htmls['app'] ?? '""',
-            __LOGIN_HTML_CONTENT__: htmls['sign'] ?? '""',
-            __ERROR_HTML_CONTENT__: htmls['problem'] ?? '""',
-            __SECRETS_HTML_CONTENT__: htmls['encrypted'] ?? '""',
-            __ICON__: JSON.stringify(faviconBase64),
+            __AHC__: htmls['app'] ?? '""',
+            __LHC__: htmls['sign'] ?? '""',
+            __PHC__: htmls['problem'] ?? '""',
+            __EHC__: htmls['encrypted'] ?? '""',
+            __ICON__: JSON.stringify(kmtmg),
             __PV__: JSON.stringify(version)
         }
     });
@@ -148,7 +148,7 @@ async function buildWorker() {
         finalCode = obfuscationResult.getObfuscatedCode();
     }
 
-    const buildTimestamp = new Date().toISOString();
+    const duftf = new Date().toISOString();
     let gitHash = '';
     try {
         gitHash = execSync('git rev-parse --short HEAD').toString().trim();
@@ -156,7 +156,7 @@ async function buildWorker() {
         gitHash = 'unknown';
     }
 
-    const buildInfo = `// Build: ${buildTimestamp} | Commit: ${gitHash} | Version: ${version}\n`;
+    const buildInfo = `// Build: ${duftf} | Commit: ${gitHash} | Version: ${version}\n`;
     const worker = `${buildInfo}// @ts-nocheck\n${finalCode}`;
     mkdirSync(DIST_PATH, { recursive: true });
     writeFileSync('./dist/build.js', worker, 'utf8');
