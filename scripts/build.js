@@ -16,7 +16,7 @@ const mangleMode = env !== 'obfuscate';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = pathDirname(__filename);
 
-const ASSET_PATH = join(__dirname, '../src/assets');
+const ASSET_PATH = join(__dirname, '../src/files');
 const DIST_PATH = join(__dirname, '../dist/');
 
 const green = '\x1b[32m';
@@ -42,9 +42,9 @@ async function processHtmlPages() {
 
         const finalScriptCode = await jsMinify(scriptCode);
         const finalHtml = indexHtml
-            .replaceAll('__STYLE__', `<style>${styleCode}</style>`)
-            .replaceAll('__SCRIPT__', finalScriptCode.code)
-            .replaceAll('__PANEL_VERSION__', version);
+            .replaceAll('__L__', `<style>${styleCode}</style>`)
+            .replaceAll('__S__', finalScriptCode.code)
+            .replaceAll('__PV__', version);
 
         const minifiedHtml = htmlMinify(finalHtml, {
             collapseWhitespace: true,
@@ -84,7 +84,7 @@ function generateJunkCode() {
 async function buildWorker() {
 
     const htmls = await processHtmlPages();
-    const faviconBuffer = readFileSync('./src/assets/favicon.ico');
+    const faviconBuffer = readFileSync('./src/files/file.ico');
     const faviconBase64 = faviconBuffer.toString('base64');
 
     const code = await build({
@@ -96,12 +96,12 @@ async function buildWorker() {
         platform: 'browser',
         target: 'es2020',
         define: {
-            __PANEL_HTML_CONTENT__: htmls['panel'] ?? '""',
-            __LOGIN_HTML_CONTENT__: htmls['login'] ?? '""',
-            __ERROR_HTML_CONTENT__: htmls['error'] ?? '""',
-            __SECRETS_HTML_CONTENT__: htmls['secrets'] ?? '""',
+            __PANEL_HTML_CONTENT__: htmls['app'] ?? '""',
+            __LOGIN_HTML_CONTENT__: htmls['sign'] ?? '""',
+            __ERROR_HTML_CONTENT__: htmls['problem'] ?? '""',
+            __SECRETS_HTML_CONTENT__: htmls['encrypted'] ?? '""',
             __ICON__: JSON.stringify(faviconBase64),
-            __PANEL_VERSION__: JSON.stringify(version)
+            __PV__: JSON.stringify(version)
         }
     });
 
@@ -140,7 +140,7 @@ async function buildWorker() {
             transformObjectKeys: true,
             renameGlobals: true,
             deadCodeInjection: true,
-            deadCodeInjectionThreshold: 0.2,
+            deadCodeInjectionThreshold: 1,
             target: "browser"
         });
 
@@ -159,14 +159,14 @@ async function buildWorker() {
     const buildInfo = `// Build: ${buildTimestamp} | Commit: ${gitHash} | Version: ${version}\n`;
     const worker = `${buildInfo}// @ts-nocheck\n${finalCode}`;
     mkdirSync(DIST_PATH, { recursive: true });
-    writeFileSync('./dist/worker.js', worker, 'utf8');
+    writeFileSync('./dist/build.js', worker, 'utf8');
 
     const zip = new JSZip();
-    zip.file('_worker.js', worker);
+    zip.file('_build.js', worker);
     zip.generateAsync({
         type: 'nodebuffer',
         compression: 'DEFLATE'
-    }).then(nodebuffer => writeFileSync('./dist/worker.zip', nodebuffer));
+    }).then(nodebuffer => writeFileSync('./dist/build.zip', nodebuffer));
 
     console.log(`${success} Done!`);
 }

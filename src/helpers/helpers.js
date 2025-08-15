@@ -1,12 +1,12 @@
-import { Authenticate, generateJWTToken, resetPassword } from "../authentication/auth";
-import { getClashNormalConfig, getClashWarpConfig } from "../cores-configs/clash";
-import { extractWireguardParams } from "../cores-configs/helpers";
-import { getHiddifyWarpConfigs, getNormalConfigs } from "../cores-configs/normalConfigs";
-import { getSingBoxCustomConfig, getSingBoxWarpConfig } from "../cores-configs/sing-box";
-import { getXrayCustomConfigs, getXrayWarpConfigs } from "../cores-configs/xray";
-import { getDataset, updateDataset } from "../kv/handlers";
+import { Authenticate, generateJWTToken, resetPassword } from "../idetify/auth";
+import { getClashNormalConfig, getClashWarpConfig } from "../clients/c";
+import { extractWireguardParams } from "../clients/helpers";
+import { getHiddifyWarpConfigs, getNormalConfigs } from "../clients/n";
+import { getSingBoxCustomConfig, getSingBoxWarpConfig } from "../clients/s";
+import { getXrayCustomConfigs, getXrayWarpConfigs } from "../clients/x";
+import { getDataset, updateDataset } from "../storage/handlers";
 import JSZip from "jszip";
-import { fetchWarpConfigs } from "../protocols/warp";
+import { fetchWarpConfigs } from "../types/w";
 
 export function isValidUUID(uuid) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -16,21 +16,21 @@ export function isValidUUID(uuid) {
 export async function handlePanel(request, env) {
 
     switch (globalThis.pathName) {
-        case '/panel':
+        case '/app':
             return await renderPanel(request, env);
-        case '/panel/settings':
+        case '/app/setup':
             return await getSettings(request, env);
-        case '/panel/update-settings':
+        case '/app/u-setup':
             return await updateSettings(request, env);
-        case '/panel/reset-settings':
+        case '/app/r-setup':
             return await resetSettings(request, env);
-        case '/panel/reset-password':
+        case '/app/r-pwd':
             return await resetPassword(request, env);
-        case '/panel/my-ip':
+        case '/app/info':
             return await getMyIP(request);
-        case '/panel/update-warp':
+        case '/app/u-w':
             return await updateWarpConfigs(request, env);
-        case '/panel/get-warp-configs':
+        case '/app/g-w':
             return await getWarpConfigs(request, env);
         default:
             return await fallback(request);
@@ -39,12 +39,12 @@ export async function handlePanel(request, env) {
 
 export async function handleError(error) {
     const message = encodeURIComponent(error.message);
-    return Response.redirect(`${globalThis.urlOrigin}/error?message=${message}`, 302);
+    return Response.redirect(`${globalThis.urlOrigin}/problem?message=${message}`, 302);
 }
 
 export async function handleLogin(request, env) {
-    if (globalThis.pathName === '/login') return await renderLogin(request, env);
-    if (globalThis.pathName === '/login/authenticate') return await generateJWTToken(request, env);
+    if (globalThis.pathName === '/sign') return await renderLogin(request, env);
+    if (globalThis.pathName === '/sign/authenticate') return await generateJWTToken(request, env);
     return await fallback(request);
 }
 
@@ -54,53 +54,53 @@ export async function handleSubscriptions(request, env) {
     const { pathName, client, subPath } = globalThis;
 
     switch (decodeURIComponent(pathName)) {
-        case `/sub/normal/${subPath}`:
+        case `/link/n/${subPath}`:
             return await getNormalConfigs(false);
 
-        case `/sub/full-normal/${subPath}`:
+        case `/link/f-n/${subPath}`:
             switch (client) {
-                case 'sfa':
+                case 's':
                     return await getSingBoxCustomConfig(env, false);
-                case 'clash':
+                case 'c':
                     return await getClashNormalConfig(env);
-                case 'xray':
+                case 'x':
                     return await getXrayCustomConfigs(env, false);
                 default:
                     break;
             }
 
-        case `/sub/fragment/${subPath}`:
+        case `/link/frg/${subPath}`:
             switch (client) {
-                case 'sfa':
+                case 's':
                     return await getSingBoxCustomConfig(env, true);
-                case 'hiddify-frag':
+                case 'h-f':
                     return await getNormalConfigs(true);
                 default:
                     return await getXrayCustomConfigs(env, true);
             }
 
-        case `/sub/warp/${subPath}`:
+        case `/link/w/${subPath}`:
             switch (client) {
-                case 'clash':
+                case 'c':
                     return await getClashWarpConfig(request, env, false);
-                case 'singbox':
+                case 's':
                     return await getSingBoxWarpConfig(request, env);
-                case 'hiddify':
+                case 'h':
                     return await getHiddifyWarpConfigs(false);
-                case 'xray':
+                case 'x':
                     return await getXrayWarpConfigs(request, env, false);
                 default:
                     break;
             }
 
-        case `/sub/warp-pro/${subPath}`:
+        case `/link/w-pro/${subPath}`:
             switch (client) {
-                case 'clash-pro':
+                case 'c-pro':
                     return await getClashWarpConfig(request, env, true);
-                case 'hiddify-pro':
+                case 'h-pro':
                     return await getHiddifyWarpConfigs(true);
-                case 'xray-knocker':
-                case 'xray-pro':
+                case 'x-k':
+                case 'x-pro':
                     return await getXrayWarpConfigs(request, env, true);
                 default:
                     break;
@@ -114,7 +114,7 @@ export async function handleSubscriptions(request, env) {
 async function updateSettings(request, env) {
     if (request.method === 'POST') {
         const auth = await Authenticate(request, env);
-        if (!auth) return await respond(false, 401, 'Unauthorized or expired session.');
+        if (!auth) return await respond(false, 401, 'Unauthorized!');
         const proxySettings = await updateDataset(request, env);
         return await respond(true, 200, null, proxySettings);
     }
@@ -125,19 +125,19 @@ async function updateSettings(request, env) {
 async function resetSettings(request, env) {
     if (request.method === 'POST') {
         const auth = await Authenticate(request, env);
-        if (!auth) return await respond(false, 401, 'Unauthorized or expired session.');
+        if (!auth) return await respond(false, 401, 'Unauthorized!');
         const proxySettings = await updateDataset(request, env);
         return await respond(true, 200, null, proxySettings);
     }
 
-    return await respond(false, 405, 'Method not allowed!');
+    return await respond(false, 405, 'Method Not Allowed!');
 }
 
 async function getSettings(request, env) {
     try {
-        const isPassSet = await env.kv.get('pwd') ? true : false;
+        const isPassSet = await env.S.get('pwd') ? true : false;
         const auth = await Authenticate(request, env);
-        if (!auth) return await respond(false, 401, 'Unauthorized or expired session.', { isPassSet });
+        if (!auth) return await respond(false, 401, 'Unauthorized!', { isPassSet });
         const { proxySettings } = await getDataset(request, env);
         const settings = {
             proxySettings,
@@ -180,7 +180,7 @@ async function getMyIP(request) {
 async function getWarpConfigs(request, env) {
     const isPro = globalThis.client === 'amnezia';
     const auth = await Authenticate(request, env);
-    if (!auth) return new Response('Unauthorized or expired session.', { status: 401 });
+    if (!auth) return new Response('Unauthorized!', { status: 401 });
     const { warpConfigs, proxySettings } = await getDataset(request, env);
     const warpConfig = extractWireguardParams(warpConfigs, false);
     const { warpIPv6, publicKey, privateKey } = warpConfig;
@@ -202,7 +202,7 @@ async function getWarpConfigs(request, env) {
 
     try {
         warpEndpoints.forEach((endpoint, index) => {
-            zip.file(`${atob('QlBC')}-Warp-${index + 1}.conf`, trimLines(
+            zip.file(`${atob('QlBC')}-W-${index + 1}.conf`, trimLines(
                 `[Interface]
                 PrivateKey = ${privateKey}
                 Address = 172.16.0.2/32, ${warpIPv6}
@@ -222,7 +222,7 @@ async function getWarpConfigs(request, env) {
         return new Response(arrayBuffer, {
             headers: {
                 "Content-Type": "application/zip",
-                "Content-Disposition": `attachment; filename="${atob('QlBC')}-Warp-${isPro ? "Pro-" : ""}configs.zip"`,
+                "Content-Disposition": `attachment; filename="${atob('QlBC')}-W-${isPro ? "Pro-" : ""}configs.zip"`,
             },
         });
     } catch (error) {
@@ -241,10 +241,10 @@ export async function serveIcon() {
 }
 
 async function renderPanel(request, env) {
-    const pwd = await env.kv.get('pwd');
+    const pwd = await env.S.get('pwd');
     if (pwd) {
         const auth = await Authenticate(request, env);
-        if (!auth) return Response.redirect(`${globalThis.urlOrigin}/login`, 302);
+        if (!auth) return Response.redirect(`${globalThis.urlOrigin}/sign`, 302);
     }
 
     const encodedHtml = __PANEL_HTML_CONTENT__;
@@ -256,7 +256,7 @@ async function renderPanel(request, env) {
 
 async function renderLogin(request, env) {
     const auth = await Authenticate(request, env);
-    if (auth) return Response.redirect(`${urlOrigin}/panel`, 302);
+    if (auth) return Response.redirect(`${urlOrigin}/app`, 302);
 
     const encodedHtml = __LOGIN_HTML_CONTENT__;
     const html = new TextDecoder('utf-8').decode(Uint8Array.from(atob(encodedHtml), c => c.charCodeAt(0)));
@@ -288,14 +288,14 @@ async function updateWarpConfigs(request, env) {
         if (!auth) return await respond(false, 401, 'Unauthorized.');
         try {
             await fetchWarpConfigs(env);
-            return await respond(true, 200, 'Warp configs updated successfully!');
+            return await respond(true, 200, 'W Updated!');
         } catch (error) {
             console.log(error);
-            return await respond(false, 500, `An error occurred while updating Warp configs: ${error}`);
+            return await respond(false, 500, `Err W Update: ${error}`);
         }
     }
 
-    return await respond(false, 405, 'Method not allowd.');
+    return await respond(false, 405, 'Method Not Allowd!');
 }
 
 export async function respond(success, status, message, body, customHeaders) {

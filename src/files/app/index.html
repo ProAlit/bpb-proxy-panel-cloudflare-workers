@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App __PV__</title>
+    <link rel="icon" href="/file.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=autorenew,content_copy,download,fingerprint,key_vertical,open_in_new,qr_code,settings,share,terminal,tune,verified,visibility,visibility_off&display=block" />
+    __L__
+</head>
+
+<body>
+    <h1>
+        <img class="icon" src="/file.ico" alt="Logo"> App <span id="app-version"
+            style="font-size: smaller;">
+            __PV__
+        </span>
+    </h1>
+    <div class="form-container container">
+        <h2><span class="material-symbols-rounded">settings</span> Settings</h2>
+        <form id="configForm" class="configForm" onsubmit="updateSettings(event)">
+            <details class="details">
+                <summary>
+                    <h3>VT</h3>
+                </summary>
+                <div class="section">
+                    <div class="form-control">
+                        <label for="remoteDNS">Remote DNS</label>
+                        <div>
+                            <input type="url" id="remoteDNS" name="remoteDNS" required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="localDNS">Local DNS</label>
+                        <div>
+                            <input type="text" id="localDNS" name="localDNS"
+                                pattern="^(localhost|(?:\d{1,3}\.){3}\d{1,3})$"
+                                title="Please enter a valid DNS IP Address!" required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="VLTRFakeDNS">Fake DNS</label>
+                        <div>
+                            <select id="VLTRFakeDNS" name="VLTRFakeDNS">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="proxyIPs">Proxy IPs | Domains</label>
+                        <div>
+                            <textarea type="text" id="proxyIPs" name="proxyIPs" rows="1"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="outProxy">Chain Proxy</label>
+                        <div>
+                            <input type="text" id="outProxy" name="outProxy">
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="cleanIPs">
+                            Clean IPs | Domains
+                            <a class="redirect" href="" title="Unavailable!" target="_blank" rel="noopener noreferrer">
+                                <span class="material-symbols-rounded">open_in_new</span>
+                            </a>
+                        </label>
+                        <div>
+                            <textarea type="text" id="cleanIPs" name="cleanIPs" rows="1"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="VLTRenableIPv6">IPv6</label>
+                        <div>
+                            <select id="VLTRenableIPv6" name="VLTRenableIPv6">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="customCdnAddrs">Custom CDN Addrs</label>
+                        <div>
+                            <textarea type="text" id="customCdnAddrs" name="customCdnAddrs" rows="1"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="customCdnHost">Custom CDN Host</label>
+                        <div>
+                            <input type="text" id="customCdnHost" name="customCdnHost">
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="customCdnSni">Custom CDN SNI</label>
+                        <div>
+                            <input type="text" id="customCdnSni" name="customCdnSni">
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="bestVLTRInterval">Best Interval</label>
+                        <div>
+                            <input type="number" id="bestVLTRInterval" name="bestVLTRInterval" min="10" max="90">
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="VLConfigs">Types</label>
+                        <div>
+                            <div class="protocols inner-container">
+                                <div class="proto">
+                                    <input type="checkbox" id="VLConfigs" name="VLConfigs" value="true"
+                                        onchange="handleProtocolChange(event)">
+                                    <label for="VLConfigs">V</label>
+                                </div>
+                                <div class="proto">
+                                    <input type="checkbox" id="TRConfigs" name="TRConfigs" value="true"
+                                        onchange="handleProtocolChange(event)">
+                                    <label for="TRConfigs">T</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="tls-ports">TLS Ports</label>
+                        <div>
+                            <div id="tls-ports" class="rules inner-container"></div>
+                        </div>
+                    </div>
+                    <div id="none-tls" class="form-control" style="display: none;">
+                        <label for="non-tls-ports">None TLS Ports</label>
+                        <div>
+                            <div id="non-tls-ports" class="rules inner-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>
+                    <h3>FRG</h3>
+                </summary>
+                <div class="section">
+                    <div class="form-control">
+                        <label for="fragmentLengthMin">Length</label>
+                        <div class="min-max">
+                            <input type="number" id="fragmentLengthMin" name="fragmentLengthMin" min="10" required>
+                            <span>-</span>
+                            <input type="number" id="fragmentLengthMax" name="fragmentLengthMax" max="500" required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="fragmentIntervalMin">Interval</label>
+                        <div class="min-max">
+                            <input type="number" id="fragmentIntervalMin" name="fragmentIntervalMin" min="1" max="30"
+                                required>
+                            <span>-</span>
+                            <input type="number" id="fragmentIntervalMax" name="fragmentIntervalMax" min="1" max="30"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="fragmentPackets">Packets</label>
+                        <div>
+                            <select id="fragmentPackets" name="fragmentPackets">
+                                <option value="tlshello">tlshello</option>
+                                <option value="1-1">1-1</option>
+                                <option value="1-2">1-2</option>
+                                <option value="1-3">1-3</option>
+                                <option value="1-5">1-5</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>
+                    <h3>W</h3>
+                </summary>
+                <div class="section">
+                    <div class="form-control">
+                        <label for="warpEndpoints">
+                            Endpoints
+                            <a class="redirect" href="" title="Unavailable!" target="_blank" rel="noopener noreferrer">
+                                <span class="material-symbols-rounded">open_in_new</span>
+                            </a>
+                        </label>
+                        <div>
+                            <textarea type="text" id="warpEndpoints" name="warpEndpoints" rows="1" required></textarea>
+                        </div>
+                    </div>
+                    <!-- <div class="form-control">
+                        <label for="endpointScanner">
+                            Scan Endpoint (Unavailable!)
+                        </label>
+                        <div>
+                            <button type="button" id="endpointScanner" class="button reverse">
+                                </button>
+                        </div>
+                    </div> -->
+                    <div class="form-control">
+                        <label for="warpFakeDNS">Fake DNS</label>
+                        <div>
+                            <select id="warpFakeDNS" name="warpFakeDNS">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="warpEnableIPv6">IPv6</label>
+                        <div>
+                            <select id="warpEnableIPv6" name="warpEnableIPv6">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="bestWarpInterval">Best Interval</label>
+                        <div>
+                            <input type="number" id="bestWarpInterval" name="bestWarpInterval" min="10" max="90">
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="refreshBtn">W Accounts</label>
+                        <div>
+                            <button type="button" class="button reverse" onclick="updateWarpConfigs()">
+                                Update<span id="w-update" class="material-symbols-rounded">autorenew</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>
+                    <h3>W PRO</h3>
+                </summary>
+                <div class="section">
+                    <div class="container">
+                        <div class="section">
+                            <h3><span class="material-symbols-rounded">tune</span> MNG - H</h3>
+                            <div class="form-control">
+                                <label for="hiddifyNoiseMode">H Mode</label>
+                                <div>
+                                    <input type="text" id="hiddifyNoiseMode" name="hiddifyNoiseMode"
+                                        pattern="^(m[1-6]|h_[0-9A-Fa-f]{2}|g_([0-9A-Fa-f]{2}_){2}[0-9A-Fa-f]{2})$"
+                                        title="Enter 'm1-m6', 'h_HEX', 'g_HEX_HEX_HEX' which HEX can be between 00 to ff"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="knockerNoiseMode">MNG Mode</label>
+                                <div>
+                                    <input type="text" id="knockerNoiseMode" name="knockerNoiseMode"
+                                        pattern="^(none|quic|random|[0-9A-Fa-f]+)$"
+                                        title="Enter 'none', 'quic', 'random', or any HEX string like 'ee0000000108aaaa'"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="noiseCountMin">Noise Count</label>
+                                <div class="min-max">
+                                    <input type="number" id="noiseCountMin" name="noiseCountMin" min="1" required>
+                                    <span>-</span>
+                                    <input type="number" id="noiseCountMax" name="noiseCountMax" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="noiseSizeMin">Noise Size</label>
+                                <div class="min-max">
+                                    <input type="number" id="noiseSizeMin" name="noiseSizeMin" min="1" required>
+                                    <span>-</span>
+                                    <input type="number" id="noiseSizeMax" name="noiseSizeMax" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="noiseDelayMin">Noise Delay</label>
+                                <div class="min-max">
+                                    <input type="number" id="noiseDelayMin" name="noiseDelayMin" min="1" required>
+                                    <span>-</span>
+                                    <input type="number" id="noiseDelayMax" name="noiseDelayMax" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="section">
+                            <h3><span class="material-symbols-rounded">tune</span> C - AMN</h3>
+                            <div class="form-control">
+                                <label for="amneziaNoiseCount">Noise Count</label>
+                                <div>
+                                    <input type="number" id="amneziaNoiseCount" name="amneziaNoiseCount" min="1"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-control">
+                                <label for="amneziaNoiseSizeMin">Noise Size</label>
+                                <div class="min-max">
+                                    <input type="number" id="amneziaNoiseSizeMin" name="amneziaNoiseSizeMin" min="1"
+                                        required>
+                                    <span>-</span>
+                                    <input type="number" id="amneziaNoiseSizeMax" name="amneziaNoiseSizeMax" min="1"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="udp-noise-container" class="container">
+                        <div class="header-container">
+                            <h3><span class="material-symbols-rounded">tune</span> NG - N</h3>
+                            <button type="button" class="add-noise" onclick="addUdpNoise(true)">
+                                <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="noises" class="section"></div>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>
+                    <h3>Routing Rules</h3>
+                </summary>
+                <div class="section">
+                    <div class="container">
+                        <h3><span class="material-symbols-rounded">tune</span> Preset Rules</h3>
+                        <div class="form-control">
+                            <label for="bypass-rules">Bypass rules</label>
+                            <div>
+                                <div id="bypass-rules" class="rules inner-container">
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassLAN" name="bypassLAN" value="true">
+                                        <label for="bypassLAN">LAN</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassIran" name="bypassIran" value="true">
+                                        <label for="bypassIran">IR</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassChina" name="bypassChina" value="true">
+                                        <label for="bypassChina">CH</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassRussia" name="bypassRussia" value="true">
+                                        <label for="bypassRussia">RU</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label for="block-rules">Block rules</label>
+                            <div>
+                                <div id="block-rules" class="rules inner-container">
+                                    <div class="routing">
+                                        <input type="checkbox" id="blockAds" name="blockAds" value="true">
+                                        <label for="blockAds">Ad</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="blockPorn" name="blockPorn" value="true">
+                                        <label for="blockPorn">Adult</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="blockUDP443" name="blockUDP443" value="true">
+                                        <label for="blockUDP443">QUIC</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <h3><span class="material-symbols-rounded">tune</span> Custom Rules</h3>
+                        <div class="form-control">
+                            <label for="customBypassRules">Bypass IPs | Domains</label>
+                            <div>
+                                <textarea type="text" id="customBypassRules" name="customBypassRules"
+                                    rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label for="customBlockRules">Block IPs | Domains</label>
+                            <div>
+                                <textarea type="text" id="customBlockRules" name="customBlockRules" rows="1"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <h3><span class="material-symbols-rounded">tune</span> Sanction Rules</h3>
+                        <div class="form-control">
+                            <label for="antiSanctionDNS">Anti Sanction DNS</label>
+                            <div>
+                                <input type="text" id="antiSanctionDNS" name="antiSanctionDNS" required>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label for="bypass-sanction-rules">Bypass rules</label>
+                            <div>
+                                <div id="bypass-sanction-rules" class="rules inner-container">
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassOpenAi" name="bypassOpenAi" value="true">
+                                        <label for="bypassOpenAi">ChatGPT</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassMicrosoft" name="bypassMicrosoft" value="true">
+                                        <label for="bypassMicrosoft">Microsoft</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassOracle" name="bypassOracle" value="true">
+                                        <label for="bypassOracle">Oracle</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassDocker" name="bypassDocker" value="true">
+                                        <label for="bypassDocker">Docker</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassAdobe" name="bypassAdobe" value="true">
+                                        <label for="bypassAdobe">Adobe</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassEpicGames" name="bypassEpicGames" value="true">
+                                        <label for="bypassEpicGames">Epic Games</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassIntel" name="bypassIntel" value="true">
+                                        <label for="bypassIntel">Intel</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassAmd" name="bypassAmd" value="true">
+                                        <label for="bypassAmd">AMD</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassNvidia" name="bypassNvidia" value="true">
+                                        <label for="bypassNvidia">Nvidia</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassAsus" name="bypassAsus" value="true">
+                                        <label for="bypassAsus">Asus</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassHp" name="bypassHp" value="true">
+                                        <label for="bypassHp">HP</label>
+                                    </div>
+                                    <div class="routing">
+                                        <input type="checkbox" id="bypassLenovo" name="bypassLenovo" value="true">
+                                        <label for="bypassLenovo">Lenovo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label for="customBypassSanctionRules">Bypass Domains</label>
+                            <div>
+                                <textarea type="text" id="customBypassSanctionRules" name="customBypassSanctionRules"
+                                    rows="1"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <div id="apply" class="form-control apply">
+                <button type="submit" id="applyButton" class="button disabled apply-settings" form="configForm">
+                    Apply
+                </button>
+                <button type="button" class="panel-settings" title="Reset Settings"
+                    onclick="resetSettings()">
+                    <i id="refresh-btn" class="fa fa-refresh fa-2x" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="panel-settings" title="Export Settings" onclick="exportSettings()">
+                    <i class="fa fa-cloud-download fa-2x" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="panel-settings" title="Import Settings" onclick="importSettings()">
+                    <i class="fa fa-cloud-upload fa-2x" aria-hidden="true"></i>
+                    <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="uploadSettings(event)" />
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="form-container container">
+        <h2><span class="material-symbols-rounded">share</span> Subscriptions - Configs</h2>
+        <details class="details">
+            <summary>
+                <h3>Normal</h3>
+            </summary>
+            <div class="table-container">
+                <table id="n-configs-table">
+                    <tr>
+                        <th>App</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>MNG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N-PRO</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>SR</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>STR</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>H</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('n', '', 'Normal', 'Normal Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('n', '', 'Normal')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>HUSI</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NB</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NR</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>K</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('n', 's', 'Normal', 'Normal Link', true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('n', 's', 'Normal')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+        <details>
+            <summary>
+                <h3>Full Normal</h3>
+            </summary>
+            <div class="table-container">
+                <table id="f-n-configs-table">
+                    <tr>
+                        <th>App</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>MNG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N-PRO</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>STR</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('f-n', 'x', 'Full Normal', 'Full Normal Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('f-n', 'x', 'Full Normal')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>SB</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (SB)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('f-n', 's', 'Full Normal', 'Full Normal Link', true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('f-n', 's', 'Full Normal')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('f-n', 's')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C M</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C V</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>FL C</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>S</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (M)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('f-n', 'c', 'Full Normal', 'Full Normal Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('f-n', 'c', 'Full Normal')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('f-n', 'c')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+        <details>
+            <summary>
+                <h3>FRG</h3>
+            </summary>
+            <div class="table-container">
+                <table id="frag-sub-table">
+                    <thead>
+                        <th>App</th>
+                        <th>Link</th>
+                    </thead>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>MNG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N-PRO</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>STR</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('frg', '', 'FRG', 'FRG Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('frg', '', 'FRG')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>SB</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (SB)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('frg', 's', 'FRG', 'FRG Link', true, false)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('frg', 's', 'FRG')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('frg', 's')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>H</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('frg', 'h-f', 'FRG', 'FRG Link', false, true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('frg', 'h-f', 'FRG', true)">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+        <details>
+            <summary>
+                <h3>W</h3>
+            </summary>
+            <div class="table-container">
+                <table id="w-configs-table">
+                    <tr>
+                        <th>App</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>STR</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w', 'x', 'W', 'W Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w', 'x', 'W')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>SB</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (SB)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w', 's', 'W', 'W Link', true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w', 's', 'W')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('w', 's')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>H</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w', 'h', 'W', 'W Link', false, true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w', 'h', 'W', true)">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C M</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C V</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>FL C</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>S</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (M)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w', 'c', 'W', 'W Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w', 'c', 'W')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('w', 'c')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>WG</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="Download" id="dlConfigsBtn" type="button"
+                                onclick="downloadWarpConfigs(false)">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+        <details>
+            <summary>
+                <h3>W PRO</h3>
+            </summary>
+            <div class="table-container">
+                <table id="w-pro-configs-table">
+                    <tr>
+                        <th>App</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>NG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>STR</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w-pro', 'x-pro', 'W Pro', 'W Pro Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w-pro', 'x-pro', 'W Pro')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>MNG</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N-PRO</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w-pro', 'x-k', 'W Pro', 'W Pro Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('w-pro', 'x-k', 'W Pro')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C M</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>C V</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>FL C</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>S</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>N (M)</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w-pro', 'c-pro', 'W Pro', 'W Pro Link')">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL" onclick="subURL('w-pro', 'c-pro', 'W Pro')">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                            <button title="Download" onclick="dlURL('w-pro', 'c-pro')">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>H</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="QR"
+                                onclick="openQR('w-pro', 'h-pro', 'W Pro', 'W Pro Link', false, true)">
+                                <span class="material-symbols-rounded">qr_code</span>
+                            </button>
+                            <button title="URL"
+                                onclick="subURL('w-pro', 'h-pro', 'W Pro', true)">
+                                <span class="material-symbols-rounded">content_copy</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>AMN</span>
+                            </div>
+                            <div>
+                                <span class="material-symbols-rounded">verified</span>
+                                <span>WG Tunnel</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button title="Download" id="dlAmneziaConfigsBtn" type="button"
+                                onclick="downloadWarpConfigs(true)">
+                                <span class="material-symbols-rounded">download</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+    </div>
+    <div class="form-container container">
+        <div id="resetPassModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeResetPass" onclick="closeResetPass()">&times;</span>
+                <form id="passwordChangeForm" onsubmit="resetPassword(event)">
+                    <h2>Change PWD</h2>
+                    <div class="section">
+                        <div class="form-control">
+                            <label for="newPassword">New PWD</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="newPassword" name="newPassword" required>
+                                <span class="material-symbols-rounded toggle-password">
+                                    visibility_off
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label for="confirmPassword">Confirm PWD</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                <span class="material-symbols-rounded toggle-password">
+                                    visibility_off
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="passwordError" class="password-error"></div>
+                    <button id="changePasswordBtn" type="submit" class="button">Change PWD</button>
+                </form>
+            </div>
+        </div>
+        <div id="qrModal" class="modalQR">
+            <div class="modal-content" class="modal-content">
+                <div class="modal-header">
+                    <span id="closeQR" class="close" onclick="closeQR()">&times;</span>
+                    <span id="qrcodeTitle" class="qr-title"></span>
+                </div>
+                <div id="qrcode-container"></div>
+            </div>
+        </div>
+        <div class="header-container">
+            <h2><span class="material-symbols-rounded">fingerprint</span> My IP</h2>
+            <button type="button" id="refresh-geo-location" class="refresh-geo-location" onclick="fetchIPInfo()">
+                <i class="fa fa-refresh fa-2x refresh-my-ip" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="my-ip">
+            <table id="ips" class="my-ip">
+                <thead>
+                    <th>Information</th>
+                    <th>CF Targets</th>
+                    <th>Other targets</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IP</td>
+                        <td id="cf-ip"></td>
+                        <td id="ip"></td>
+                    </tr>
+                    <tr>
+                        <td>Country</td>
+                        <td id="cf-country"></td>
+                        <td id="country"></td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td id="cf-city"></td>
+                        <td id="city"></td>
+                    </tr>
+                    <tr>
+                        <td>ISP</td>
+                        <td id="cf-isp"></td>
+                        <td id="isp"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="footer-container">
+        <div class="footer">
+            <div class="github-container">
+                <i class="fa fa-github"></i>
+                <a class="link" id="github-link" href=""
+                    target="_blank">Refresh</a>
+            </div>
+            <button id="openResetPass" class="button" onclick="openResetPass()">Change PWD <span
+                    class="material-symbols-rounded">key_vertical</span></button>
+            <button type="button" id="logout" class="logout" title="Log out" onclick="logout(event)">
+                <i class="fa fa-power-off fa-2x" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+    </div>
+    <button id="darkModeToggle" class="floating-button" onclick="darkModeToggle()">
+        <i id="modeIcon" class="fa fa-2x fa-adjust dark-mode" aria-hidden="true"></i>
+    </button>
+
+    <script type="module" defer>
+        import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
+        polyfillCountryFlagEmojis();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>__S__</script>
+</body>
+
+</html>
